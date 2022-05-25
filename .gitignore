@@ -1,0 +1,7 @@
+__pycache__
+migrations
+.idea
+.vscode
+db.sqlite3
+media
+secret.key
