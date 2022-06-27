@@ -1,22 +1,40 @@
+from django.contrib.auth import authenticate, login, logout
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_jwt.settings import api_settings
+from rest_framework.exceptions import ValidationError
+from rest_framework.status import HTTP_204_NO_CONTENT
 
-from .serializers import LoginSerializer, UserDetailSerializer
-
-jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+from .serializers import UserDetailSerializer
 
 
-class LoginAPIView(APIView):
+class LoginView(APIView):
     authentication_classes = []
     permission_classes = []
 
     def post(self, *args, **kwargs):
-        serializer = LoginSerializer(data=self.request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.user
-        payload = jwt_payload_handler(user)
-        token = jwt_encode_handler(payload)
+        username = self.request.data.get('username')
+        password = self.request.data.get('password')
+        user = authenticate(username=username, password=password)
+        if not user:
+            raise ValidationError('用户名或密码错误')
+        if not user.is_active:
+            raise ValidationError('用户未激活')
+        login(self.request, user)
         serializer = UserDetailSerializer(instance=user)
-        return Response({'token': token, 'user': serializer.data})
+        return Response({'user': serializer.data})
+
+
+class LogoutView(APIView):
+    permission_classes = []
+
+    def get(self, *args, **kwargs):
+        logout(self.request)
+        return Response(status=HTTP_204_NO_CONTENT)
+
+
+class InfoAPIView(APIView):
+    permission_classes = []
+
+    def get(self, *args, **kwargs):
+        serializer = UserDetailSerializer(instance=self.request.user)
+        return Response({'user': serializer.data})

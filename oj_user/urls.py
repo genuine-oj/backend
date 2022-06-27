@@ -1,11 +1,8 @@
 from django.urls import path
-from rest_framework.routers import SimpleRouter
-from .views import LoginAPIView
-
-router = SimpleRouter()
+from .views import LoginView, LogoutView, InfoAPIView
 
 urlpatterns = [
-    path('login/', LoginAPIView.as_view())
+    path('login/', LoginView.as_view()),
+    path('logout/', LogoutView.as_view()),
+    path('info/', InfoAPIView.as_view(), name='info')
 ]
-
-urlpatterns += router.urls

@@ -4,4 +4,5 @@ migrations
 .vscode
 db.sqlite3
 media
+venv
 secret.key

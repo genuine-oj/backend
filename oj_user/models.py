@@ -1,6 +1,7 @@
 from django.db import models
 from django.apps import apps
-from django.contrib.auth.models import BaseUserManager, UnicodeUsernameValidator, AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager, UnicodeUsernameValidator, AbstractBaseUser, PermissionsMixin, \
+    Group as BaseGroup
 from django.contrib.auth.hashers import make_password
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
@@ -24,18 +25,24 @@ class UserManager(BaseUserManager):
 
     def create_user(self, username, email=None, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+
         return self._create_user(username, email, password, **extra_fields)
 
     def create_superuser(self, username, email=None, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
 
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
         return self._create_user(username, email, password, **extra_fields)
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     username_validator = UnicodeUsernameValidator()
 
     username = models.CharField(
@@ -68,3 +75,14 @@ class User(AbstractBaseUser):
     def clean(self):
         super().clean()
         self.email = self.__class__.objects.normalize_email(self.email)
+
+    class Meta:
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
+
+
+class Group(BaseGroup):
+    class Meta:
+        proxy = True
+        verbose_name = _('group')
+        verbose_name_plural = _('groups')

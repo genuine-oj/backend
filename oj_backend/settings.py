@@ -28,12 +28,13 @@ else:
     ALLOWED_HOSTS = ['*']
 
 VENDOR_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_jwt',
-    'rest_framework_jwt.blacklist',
     'django_filters',
 ]
 
@@ -48,8 +49,8 @@ INSTALLED_APPS = VENDOR_APPS + LOCAL_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -64,6 +65,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.i18n',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -105,17 +107,26 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'zh-hans'
+LANGUAGE_CODE = 'en'
+
+LOCALE_PATHS = [BASE_DIR / 'locale']
+
+LANGUAGES = [
+    ('en', 'English'),
+    ('zh-Hans', '中文简体'),
+]
 
 TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
+USE_L10N = True
+
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
-MEDIA_URL = 'upload/'
+MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -125,19 +136,14 @@ AUTH_USER_MODEL = 'oj_user.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'oj_backend.permissions.IsAuthenticatedAndReadOnly',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100,
+    'PAGE_SIZE': 50,
     'EXCEPTION_HANDLER': 'oj_backend.utils.exception_handler',
-}
-
-JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
-    'JWT_ALLOW_REFRESH': False,
 }
 
 CELERY_TIMEZONE = TIME_ZONE
@@ -152,6 +158,8 @@ CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
 
 JUDGE_SERVER = '127.0.0.1:18082'
 
-TEST_DATA_ROOT = MEDIA_ROOT / 'test-data'
+JUDGE_DATA_ROOT = BASE_DIR / 'judge_data'
 
-SPJ_ROOT = MEDIA_ROOT / 'spj'
+TEST_DATA_ROOT = JUDGE_DATA_ROOT / 'test_data'
+
+SPJ_ROOT = JUDGE_DATA_ROOT / 'spj'

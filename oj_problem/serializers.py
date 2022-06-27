@@ -52,3 +52,8 @@ class ProblemDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Problem
         exclude = ['sample_1', 'sample_2', 'sample_3']
+
+    def create(self, validated_data):
+        problem = Problem.objects.create(**validated_data)
+        TestCase.objects.create(problem=problem)
+        return problem

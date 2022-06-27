@@ -1,0 +1,276 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-06-27 21:55+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: .\oj_problem\apps.py:8
+msgid "Problem"
+msgstr "题目"
+
+#: .\oj_problem\models.py:11
+msgid "title"
+msgstr "标题"
+
+#: .\oj_problem\models.py:12
+msgid "description"
+msgstr "描述"
+
+#: .\oj_problem\models.py:13
+msgid "input format"
+msgstr "输入格式"
+
+#: .\oj_problem\models.py:14
+msgid "output format"
+msgstr "输出格式"
+
+#: .\oj_problem\models.py:15
+msgid "sample 1"
+msgstr "样例1"
+
+#: .\oj_problem\models.py:16
+msgid "sample 2"
+msgstr "样例2"
+
+#: .\oj_problem\models.py:17
+msgid "sample 3"
+msgstr "样例3"
+
+#: .\oj_problem\models.py:18
+msgid "hint"
+msgstr "提示"
+
+#: .\oj_problem\models.py:19
+msgid "time limit (ms)"
+msgstr "时间限制 (ms)"
+
+#: .\oj_problem\models.py:20
+msgid "memory limit (MB)"
+msgstr "内存限制 (MB)"
+
+#: .\oj_problem\models.py:21
+msgid "hide"
+msgstr "隐藏"
+
+#: .\oj_problem\models.py:22 .\oj_submission\models.py:54
+msgid "create time"
+msgstr "创建时间"
+
+#: .\oj_problem\models.py:23
+msgid "update time"
+msgstr "更新时间"
+
+#: .\oj_problem\models.py:26 .\oj_problem\models.py:39
+#: .\oj_submission\models.py:34
+msgid "problem"
+msgstr "题目"
+
+#: .\oj_problem\models.py:27
+msgid "problems"
+msgstr "题目"
+
+#: .\oj_problem\models.py:31
+msgid "NULL"
+msgstr "无"
+
+#: .\oj_problem\models.py:32
+msgid "Traditional (CXX)"
+msgstr "传统 (CXX)"
+
+#: .\oj_problem\models.py:33
+msgid "Simple (Python3)"
+msgstr "简易 (Python3)"
+
+#: .\oj_problem\models.py:43
+msgid "test case id"
+msgstr "测试数据集id"
+
+#: .\oj_problem\models.py:44
+msgid "test case config"
+msgstr "测试数据配置"
+
+#: .\oj_problem\models.py:45
+msgid "spj id"
+msgstr "特殊裁决id"
+
+#: .\oj_problem\models.py:47
+msgid "spj mode"
+msgstr "特殊裁决模式"
+
+#: .\oj_problem\models.py:53
+msgid "subcheck config"
+msgstr "子评测配置"
+
+#: .\oj_problem\models.py:54
+msgid "spj"
+msgstr "特殊裁决"
+
+#: .\oj_problem\models.py:55
+msgid "subcheck"
+msgstr "子评测"
+
+#: .\oj_problem\models.py:58
+msgid "testcase"
+msgstr "测试数据"
+
+#: .\oj_problem\models.py:59
+msgid "testcases"
+msgstr "测试数据"
+
+#: .\oj_submission\apps.py:8
+msgid "Submission and Judgement"
+msgstr "提交与评测"
+
+#: .\oj_submission\models.py:14
+msgid "pending"
+msgstr "等待中"
+
+#: .\oj_submission\models.py:15
+msgid "judging"
+msgstr "评测中"
+
+#: .\oj_submission\models.py:16
+msgid "compile error"
+msgstr "编译错误"
+
+#: .\oj_submission\models.py:17
+msgid "wrong answer"
+msgstr "答案错误"
+
+#: .\oj_submission\models.py:18
+msgid "accepted"
+msgstr "通过"
+
+#: .\oj_submission\models.py:19
+msgid "time limit exceeded"
+msgstr "时间超限"
+
+#: .\oj_submission\models.py:20
+msgid "memory limit exceeded"
+msgstr "内存超限"
+
+#: .\oj_submission\models.py:21
+msgid "runtime error"
+msgstr "运行时错误"
+
+#: .\oj_submission\models.py:22
+msgid "system error"
+msgstr "系统错误"
+
+#: .\oj_submission\models.py:28 .\oj_user\models.py:80
+msgid "user"
+msgstr "用户"
+
+#: .\oj_submission\models.py:38
+msgid "source code"
+msgstr "源代码"
+
+#: .\oj_submission\models.py:40
+msgid "language"
+msgstr "语言"
+
+#: .\oj_submission\models.py:45
+msgid "status"
+msgstr "状态"
+
+#: .\oj_submission\models.py:49
+msgid "score"
+msgstr "分数"
+
+#: .\oj_submission\models.py:50
+msgid "execute time"
+msgstr ""
+
+#: .\oj_submission\models.py:51
+msgid "execute memory"
+msgstr ""
+
+#: .\oj_submission\models.py:52
+msgid "execute detail"
+msgstr ""
+
+#: .\oj_submission\models.py:53
+msgid "execute log"
+msgstr ""
+
+#: .\oj_submission\models.py:57
+msgid "submission"
+msgstr ""
+
+#: .\oj_submission\models.py:58
+msgid "submissions"
+msgstr ""
+
+#: .\oj_user\admin.py:14
+msgid "Personal info"
+msgstr ""
+
+#: .\oj_user\admin.py:15
+msgid "Permissions"
+msgstr ""
+
+#: .\oj_user\admin.py:16
+msgid "Important dates"
+msgstr ""
+
+#: .\oj_user\apps.py:8
+msgid "Authentication and Authorization"
+msgstr ""
+
+#: .\oj_user\models.py:49
+msgid "username"
+msgstr ""
+
+#: .\oj_user\models.py:54
+msgid "A user with that username already exists."
+msgstr ""
+
+#: .\oj_user\models.py:57
+msgid "real name"
+msgstr ""
+
+#: .\oj_user\models.py:58
+msgid "student id"
+msgstr ""
+
+#: .\oj_user\models.py:59
+msgid "email address"
+msgstr ""
+
+#: .\oj_user\models.py:61
+msgid "staff status"
+msgstr ""
+
+#: .\oj_user\models.py:65
+msgid "active"
+msgstr ""
+
+#: .\oj_user\models.py:68
+msgid "date joined"
+msgstr ""
+
+#: .\oj_user\models.py:81
+msgid "users"
+msgstr ""
+
+#: .\oj_user\models.py:87
+msgid "group"
+msgstr ""
+
+#: .\oj_user\models.py:88
+msgid "groups"
+msgstr ""

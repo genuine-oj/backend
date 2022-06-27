@@ -1,6 +1,5 @@
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.exceptions import NotFound
@@ -12,13 +11,13 @@ from wsgiref.util import FileWrapper
 from zipfile import ZipFile
 import hashlib
 
-from oj_backend.permissions import IsAdminOrReadOnly
 from .models import Problem
 from .serializers import ProblemSerializer, ProblemDetailSerializer, TestCaseDetailSerializer, TestCaseUpdateSerializer
+from oj_backend.permissions import Granted, IsAuthenticatedAndReadOnly
 
 
 class ProblemViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated & IsAdminOrReadOnly]
+    permission_classes = [Granted | IsAuthenticatedAndReadOnly]
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['id', 'title']
     ordering_fields = ['id', 'title']
@@ -33,7 +32,7 @@ class ProblemViewSet(ModelViewSet):
             return ProblemSerializer
         return ProblemDetailSerializer
 
-    @action(detail=True, methods=['get', 'post'], permission_classes=[IsAdminUser])
+    @action(detail=True, methods=['get', 'post'])
     def data(self, request, *args, **kwargs):
         instance = self.get_object().test_case
         if self.request.method == 'GET':
