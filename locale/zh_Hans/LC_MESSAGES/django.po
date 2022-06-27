@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: genuine-oj-backend\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-27 22:24+0800\n"
-"PO-Revision-Date: 2022-06-27 14:31\n"
+"PO-Revision-Date: 2022-06-27 19:42\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -136,59 +136,59 @@ msgstr "提交与评测"
 
 #: .\oj_submission\models.py:14
 msgid "pending"
-msgstr "等待中"
+msgstr ""
 
 #: .\oj_submission\models.py:15
 msgid "judging"
-msgstr "评测中"
+msgstr ""
 
 #: .\oj_submission\models.py:16
 msgid "compile error"
-msgstr "编译错误"
+msgstr ""
 
 #: .\oj_submission\models.py:17
 msgid "wrong answer"
-msgstr "答案错误"
+msgstr ""
 
 #: .\oj_submission\models.py:18
 msgid "accepted"
-msgstr "通过"
+msgstr ""
 
 #: .\oj_submission\models.py:19
 msgid "time limit exceeded"
-msgstr "时间超限"
+msgstr ""
 
 #: .\oj_submission\models.py:20
 msgid "memory limit exceeded"
-msgstr "内存超限"
+msgstr ""
 
 #: .\oj_submission\models.py:21
 msgid "runtime error"
-msgstr "运行时错误"
+msgstr ""
 
 #: .\oj_submission\models.py:22
 msgid "system error"
-msgstr "系统错误"
+msgstr ""
 
 #: .\oj_submission\models.py:28 .\oj_user\models.py:80
 msgid "user"
-msgstr "用户"
+msgstr ""
 
 #: .\oj_submission\models.py:38
 msgid "source code"
-msgstr "源代码"
+msgstr ""
 
 #: .\oj_submission\models.py:40
 msgid "language"
-msgstr "语言"
+msgstr ""
 
 #: .\oj_submission\models.py:45
 msgid "status"
-msgstr "状态"
+msgstr ""
 
 #: .\oj_submission\models.py:49
 msgid "score"
-msgstr "分数"
+msgstr ""
 
 #: .\oj_submission\models.py:50
 msgid "execute time"
