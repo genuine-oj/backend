@@ -1,5 +1,7 @@
 # Back End | 网站后端
 
+[![Crowdin](https://badges.crowdin.net/genuine-oj-backend/localized.svg)](https://crowdin.com/project/genuine-oj-backend)
+
 ### Pre-request | 前置要求
 
 * Python ≥ 3.7
