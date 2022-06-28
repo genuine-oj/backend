@@ -17,6 +17,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(label=_('username'), max_length=150)
     password = serializers.CharField(label=_('password'))
 
     class Meta:

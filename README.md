@@ -1,6 +1,7 @@
 # Back End | 网站后端
 
 [![Crowdin](https://badges.crowdin.net/genuine-oj-backend/localized.svg)](https://crowdin.com/project/genuine-oj-backend)
+[![GitHub license](https://img.shields.io/github/license/genuine-oj/backend)](https://github.com/genuine-oj/backend/blob/master/LICENSE.md)
 
 ### Pre-request | 前置要求
 
@@ -14,6 +15,10 @@
 ```bash
 pip3 install -r requirements.txt
 echo $(python3 -c "from django.core.management import utils;print(utils.get_random_secret_key())") > secret.key
+python3 manage.py makemigrations oj_user
+python3 manage.py migrate
+python3 manage.py makemigrations oj_problem oj_submission
+python3 manage.py migrate
 ```
 
 ### API document | 接口文档
