@@ -52,6 +52,7 @@ class Submission(models.Model):
     detail = models.JSONField(_('execute detail'), default=list)
     log = models.TextField(_('execute log'), max_length=400, default='', blank=True)
     create_time = models.DateTimeField(_('create time'), auto_now_add=True)
+    is_hidden = models.BooleanField(_('hidden'), default=False)
 
     class Meta:
         verbose_name = _('submission')

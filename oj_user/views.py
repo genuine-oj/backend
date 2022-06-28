@@ -1,24 +1,29 @@
 from django.contrib.auth import authenticate, login, logout
+from django.utils.translation import gettext_lazy as _
 from rest_framework.response import Response
+from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
 from rest_framework.exceptions import ValidationError
 from rest_framework.status import HTTP_204_NO_CONTENT
 
-from .serializers import UserDetailSerializer
+from .serializers import LoginSerializer, UserDetailSerializer
 
 
-class LoginView(APIView):
+class LoginView(GenericAPIView):
     authentication_classes = []
     permission_classes = []
+    serializer_class = LoginSerializer
 
     def post(self, *args, **kwargs):
-        username = self.request.data.get('username')
-        password = self.request.data.get('password')
+        serializer = self.get_serializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
+        username = serializer.validated_data.get('username')
+        password = serializer.validated_data.get('password')
         user = authenticate(username=username, password=password)
         if not user:
-            raise ValidationError('用户名或密码错误')
+            raise ValidationError(_('Uername or password error.'))
         if not user.is_active:
-            raise ValidationError('用户未激活')
+            raise ValidationError(_('User is disabled.'))
         login(self.request, user)
         serializer = UserDetailSerializer(instance=user)
         return Response({'user': serializer.data})
@@ -32,9 +37,10 @@ class LogoutView(APIView):
         return Response(status=HTTP_204_NO_CONTENT)
 
 
-class InfoAPIView(APIView):
+class InfoAPIView(GenericAPIView):
     permission_classes = []
+    serializer_class = UserDetailSerializer
 
     def get(self, *args, **kwargs):
-        serializer = UserDetailSerializer(instance=self.request.user)
+        serializer = self.get_serializer(instance=self.request.user)
         return Response({'user': serializer.data})

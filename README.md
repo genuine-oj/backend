@@ -26,3 +26,6 @@ echo $(python3 -c "from django.core.management import utils;print(utils.get_rand
   |-spj 特殊评测源代码，可以存放于其他位置，需要修改SPJ_ROOT
   |-test-data 评测数据，可以存放于其他位置，需要修改TEST_DATA_ROOT
 ```
+
+## API document | 接口文档
+https://www.apifox.cn/apidoc/project-931688

@@ -2,6 +2,7 @@ from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.exceptions import NotFound
 
 from django.conf import settings
@@ -16,8 +17,14 @@ from .serializers import ProblemSerializer, ProblemDetailSerializer, TestCaseDet
 from oj_backend.permissions import Granted, IsAuthenticatedAndReadOnly
 
 
+class ProblemPagination(LimitOffsetPagination):
+    default_limit = 50
+    max_limit = 200
+
+
 class ProblemViewSet(ModelViewSet):
     permission_classes = [Granted | IsAuthenticatedAndReadOnly]
+    pagination_class = ProblemPagination
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['id', 'title']
     ordering_fields = ['id', 'title']
