@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: genuine-oj-backend\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-27 22:24+0800\n"
-"PO-Revision-Date: 2022-06-28 14:10\n"
+"PO-Revision-Date: 2022-06-28 14:11\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -244,33 +244,33 @@ msgstr "真实姓名"
 
 #: .\oj_user\models.py:58
 msgid "student id"
-msgstr ""
+msgstr "学生ID"
 
 #: .\oj_user\models.py:59
 msgid "email address"
-msgstr ""
+msgstr "邮箱"
 
 #: .\oj_user\models.py:61
 msgid "staff status"
-msgstr ""
+msgstr "工作人员状态"
 
 #: .\oj_user\models.py:65
 msgid "active"
-msgstr ""
+msgstr "可用"
 
 #: .\oj_user\models.py:68
 msgid "date joined"
-msgstr ""
+msgstr "注册日期"
 
 #: .\oj_user\models.py:81
 msgid "users"
-msgstr ""
+msgstr "用户"
 
 #: .\oj_user\models.py:87
 msgid "group"
-msgstr ""
+msgstr "用户组"
 
 #: .\oj_user\models.py:88
 msgid "groups"
-msgstr ""
+msgstr "用户组"
 
