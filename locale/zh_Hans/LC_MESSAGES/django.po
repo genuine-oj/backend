@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: genuine-oj-backend\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-27 22:24+0800\n"
-"PO-Revision-Date: 2022-06-27 14:31\n"
+"PO-Revision-Date: 2022-06-28 14:11\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -192,85 +192,85 @@ msgstr "分数"
 
 #: .\oj_submission\models.py:50
 msgid "execute time"
-msgstr ""
+msgstr "执行所用时间"
 
 #: .\oj_submission\models.py:51
 msgid "execute memory"
-msgstr ""
+msgstr "执行所用内存"
 
 #: .\oj_submission\models.py:52
 msgid "execute detail"
-msgstr ""
+msgstr "执行详情"
 
 #: .\oj_submission\models.py:53
 msgid "execute log"
-msgstr ""
+msgstr "执行日志"
 
 #: .\oj_submission\models.py:57
 msgid "submission"
-msgstr ""
+msgstr "提交"
 
 #: .\oj_submission\models.py:58
 msgid "submissions"
-msgstr ""
+msgstr "提交"
 
 #: .\oj_user\admin.py:14
 msgid "Personal info"
-msgstr ""
+msgstr "个人信息"
 
 #: .\oj_user\admin.py:15
 msgid "Permissions"
-msgstr ""
+msgstr "权限"
 
 #: .\oj_user\admin.py:16
 msgid "Important dates"
-msgstr ""
+msgstr "重要时间节点"
 
 #: .\oj_user\apps.py:8
 msgid "Authentication and Authorization"
-msgstr ""
+msgstr "身份验证和授权"
 
 #: .\oj_user\models.py:49
 msgid "username"
-msgstr ""
+msgstr "用户名"
 
 #: .\oj_user\models.py:54
 msgid "A user with that username already exists."
-msgstr ""
+msgstr "已存在相同用户名的用户。"
 
 #: .\oj_user\models.py:57
 msgid "real name"
-msgstr ""
+msgstr "真实姓名"
 
 #: .\oj_user\models.py:58
 msgid "student id"
-msgstr ""
+msgstr "学生ID"
 
 #: .\oj_user\models.py:59
 msgid "email address"
-msgstr ""
+msgstr "邮箱"
 
 #: .\oj_user\models.py:61
 msgid "staff status"
-msgstr ""
+msgstr "工作人员状态"
 
 #: .\oj_user\models.py:65
 msgid "active"
-msgstr ""
+msgstr "可用"
 
 #: .\oj_user\models.py:68
 msgid "date joined"
-msgstr ""
+msgstr "注册日期"
 
 #: .\oj_user\models.py:81
 msgid "users"
-msgstr ""
+msgstr "用户"
 
 #: .\oj_user\models.py:87
 msgid "group"
-msgstr ""
+msgstr "用户组"
 
 #: .\oj_user\models.py:88
 msgid "groups"
-msgstr ""
+msgstr "用户组"
 
