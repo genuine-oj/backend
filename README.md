@@ -8,7 +8,7 @@
 * Python ≥ 3.7
 * Django ≥ 3.0
 * Redis
-* RabbitMQ `可选`
+* RabbitMQ `推荐`
 
 ### Install | 安装
 
