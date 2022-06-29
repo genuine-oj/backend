@@ -128,7 +128,7 @@ REST_FRAMEWORK = {
         'oj_backend.permissions.IsAuthenticatedAndReadOnly',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
+        'oj_backend.authentication.SessionAuthentication',
     ],
     'EXCEPTION_HANDLER': 'oj_backend.utils.exception_handler',
 }
