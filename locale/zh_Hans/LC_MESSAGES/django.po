@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: genuine-oj-backend\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-27 22:24+0800\n"
-"PO-Revision-Date: 2022-06-28 14:11\n"
+"POT-Creation-Date: 2022-06-29 11:08+0800\n"
+"PO-Revision-Date: 2022-06-29 03:17\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -206,11 +206,15 @@ msgstr "执行详情"
 msgid "execute log"
 msgstr "执行日志"
 
-#: .\oj_submission\models.py:57
+#: .\oj_submission\models.py:55
+msgid "hidden"
+msgstr ""
+
+#: .\oj_submission\models.py:58
 msgid "submission"
 msgstr "提交"
 
-#: .\oj_submission\models.py:58
+#: .\oj_submission\models.py:59
 msgid "submissions"
 msgstr "提交"
 
@@ -230,7 +234,7 @@ msgstr "重要时间节点"
 msgid "Authentication and Authorization"
 msgstr "身份验证和授权"
 
-#: .\oj_user\models.py:49
+#: .\oj_user\models.py:49 .\oj_user\serializers.py:20
 msgid "username"
 msgstr "用户名"
 
@@ -273,4 +277,16 @@ msgstr "用户组"
 #: .\oj_user\models.py:88
 msgid "groups"
 msgstr "用户组"
+
+#: .\oj_user\serializers.py:21
+msgid "password"
+msgstr ""
+
+#: .\oj_user\views.py:24
+msgid "Uername or password error."
+msgstr ""
+
+#: .\oj_user\views.py:26
+msgid "User is disabled."
+msgstr ""
 
