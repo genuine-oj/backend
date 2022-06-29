@@ -1,6 +1,6 @@
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.authentication import SessionAuthentication as BaseSessionAuthentication
 
 
-class SessionAuthentication(SessionAuthentication):
+class SessionAuthentication(BaseSessionAuthentication):
     def enforce_csrf(self, request):
         return
