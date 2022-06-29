@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-27 22:24+0800\n"
+"POT-Creation-Date: 2022-06-29 11:08+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -207,11 +207,15 @@ msgstr ""
 msgid "execute log"
 msgstr ""
 
-#: .\oj_submission\models.py:57
-msgid "submission"
+#: .\oj_submission\models.py:55
+msgid "hidden"
 msgstr ""
 
 #: .\oj_submission\models.py:58
+msgid "submission"
+msgstr ""
+
+#: .\oj_submission\models.py:59
 msgid "submissions"
 msgstr ""
 
@@ -231,7 +235,7 @@ msgstr ""
 msgid "Authentication and Authorization"
 msgstr ""
 
-#: .\oj_user\models.py:49
+#: .\oj_user\models.py:49 .\oj_user\serializers.py:20
 msgid "username"
 msgstr ""
 
@@ -273,4 +277,16 @@ msgstr ""
 
 #: .\oj_user\models.py:88
 msgid "groups"
+msgstr ""
+
+#: .\oj_user\serializers.py:21
+msgid "password"
+msgstr ""
+
+#: .\oj_user\views.py:24
+msgid "Uername or password error."
+msgstr ""
+
+#: .\oj_user\views.py:26
+msgid "User is disabled."
 msgstr ""
