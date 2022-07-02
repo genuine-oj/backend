@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: genuine-oj-backend\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-29 11:08+0800\n"
-"PO-Revision-Date: 2022-06-29 03:17\n"
+"POT-Creation-Date: 2022-07-02 21:13+0800\n"
+"PO-Revision-Date: 2022-07-02 13:16\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -17,116 +17,138 @@ msgstr ""
 "X-Crowdin-File: /master/locale/en/LC_MESSAGES/django.po\n"
 "X-Crowdin-File-ID: 24\n"
 
+#: .\oj_problem\admin.py:18
+msgid "tags"
+msgstr ""
+
 #: .\oj_problem\apps.py:8
 msgid "Problem"
 msgstr "题目"
 
-#: .\oj_problem\models.py:11
+#: .\oj_problem\models.py:14
 msgid "title"
 msgstr "标题"
 
-#: .\oj_problem\models.py:12
+#: .\oj_problem\models.py:15
 msgid "description"
 msgstr "描述"
 
-#: .\oj_problem\models.py:13
+#: .\oj_problem\models.py:16
 msgid "input format"
 msgstr "输入格式"
 
-#: .\oj_problem\models.py:14
+#: .\oj_problem\models.py:17
 msgid "output format"
 msgstr "输出格式"
 
-#: .\oj_problem\models.py:15
+#: .\oj_problem\models.py:18
 msgid "sample 1"
 msgstr "样例1"
 
-#: .\oj_problem\models.py:16
+#: .\oj_problem\models.py:19
 msgid "sample 2"
 msgstr "样例2"
 
-#: .\oj_problem\models.py:17
+#: .\oj_problem\models.py:20
 msgid "sample 3"
 msgstr "样例3"
 
-#: .\oj_problem\models.py:18
+#: .\oj_problem\models.py:21
 msgid "hint"
 msgstr "提示"
 
-#: .\oj_problem\models.py:19
+#: .\oj_problem\models.py:22
+msgid "difficulty"
+msgstr ""
+
+#: .\oj_problem\models.py:22
+msgid "level: 0 to 7, 0 for unset"
+msgstr ""
+
+#: .\oj_problem\models.py:24
 msgid "time limit (ms)"
 msgstr "时间限制 (ms)"
 
-#: .\oj_problem\models.py:20
+#: .\oj_problem\models.py:25
 msgid "memory limit (MB)"
 msgstr "内存限制 (MB)"
 
-#: .\oj_problem\models.py:21
+#: .\oj_problem\models.py:26
 msgid "hide"
 msgstr "隐藏"
 
-#: .\oj_problem\models.py:22 .\oj_submission\models.py:54
+#: .\oj_problem\models.py:27 .\oj_problem\models.py:51
+#: .\oj_submission\models.py:54
 msgid "create time"
 msgstr "创建时间"
 
-#: .\oj_problem\models.py:23
+#: .\oj_problem\models.py:28
 msgid "update time"
 msgstr "更新时间"
 
-#: .\oj_problem\models.py:26 .\oj_problem\models.py:39
-#: .\oj_submission\models.py:34
+#: .\oj_problem\models.py:31 .\oj_problem\models.py:41
+#: .\oj_problem\models.py:67 .\oj_submission\models.py:34
 msgid "problem"
 msgstr "题目"
 
-#: .\oj_problem\models.py:27
+#: .\oj_problem\models.py:32
 msgid "problems"
 msgstr "题目"
 
-#: .\oj_problem\models.py:31
+#: .\oj_problem\models.py:47 .\oj_submission\models.py:28
+#: .\oj_user\models.py:80
+msgid "user"
+msgstr "用户"
+
+#: .\oj_problem\models.py:54 .\oj_problem\models.py:55
+msgid "problem solve data"
+msgstr ""
+
+#: .\oj_problem\models.py:59
 msgid "NULL"
 msgstr "无"
 
-#: .\oj_problem\models.py:32
+#: .\oj_problem\models.py:60
 msgid "Traditional (CXX)"
 msgstr "传统 (CXX)"
 
-#: .\oj_problem\models.py:33
+#: .\oj_problem\models.py:61
 msgid "Simple (Python3)"
 msgstr "简易 (Python3)"
 
-#: .\oj_problem\models.py:43
+#: .\oj_problem\models.py:71
 msgid "test case id"
 msgstr "测试数据集id"
 
-#: .\oj_problem\models.py:44
+#: .\oj_problem\models.py:72
 msgid "test case config"
 msgstr "测试数据配置"
 
-#: .\oj_problem\models.py:45
+#: .\oj_problem\models.py:73
 msgid "spj id"
 msgstr "特殊裁决id"
 
-#: .\oj_problem\models.py:47
+#: .\oj_problem\models.py:75
 msgid "spj mode"
 msgstr "特殊裁决模式"
 
-#: .\oj_problem\models.py:53
+#: .\oj_problem\models.py:81
 msgid "subcheck config"
 msgstr "子评测配置"
 
-#: .\oj_problem\models.py:54
+#: .\oj_problem\models.py:82
 msgid "spj"
 msgstr "特殊裁决"
 
-#: .\oj_problem\models.py:55
+#: .\oj_problem\models.py:83
 msgid "subcheck"
 msgstr "子评测"
 
-#: .\oj_problem\models.py:58
+#: .\oj_problem\models.py:86
 msgid "testcase"
 msgstr "测试数据"
 
-#: .\oj_problem\models.py:59
+#: .\oj_problem\models.py:87
 msgid "testcases"
 msgstr "测试数据"
 
@@ -169,10 +191,6 @@ msgstr "运行时错误"
 #: .\oj_submission\models.py:22
 msgid "system error"
 msgstr "系统错误"
-
-#: .\oj_submission\models.py:28 .\oj_user\models.py:80
-msgid "user"
-msgstr "用户"
 
 #: .\oj_submission\models.py:38
 msgid "source code"
