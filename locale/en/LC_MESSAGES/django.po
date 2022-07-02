@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-29 11:08+0800\n"
+"POT-Creation-Date: 2022-07-02 21:13+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,116 +18,138 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: .\oj_problem\admin.py:18
+msgid "tags"
+msgstr ""
+
 #: .\oj_problem\apps.py:8
 msgid "Problem"
 msgstr ""
 
-#: .\oj_problem\models.py:11
+#: .\oj_problem\models.py:14
 msgid "title"
 msgstr ""
 
-#: .\oj_problem\models.py:12
+#: .\oj_problem\models.py:15
 msgid "description"
 msgstr ""
 
-#: .\oj_problem\models.py:13
+#: .\oj_problem\models.py:16
 msgid "input format"
 msgstr ""
 
-#: .\oj_problem\models.py:14
+#: .\oj_problem\models.py:17
 msgid "output format"
 msgstr ""
 
-#: .\oj_problem\models.py:15
+#: .\oj_problem\models.py:18
 msgid "sample 1"
 msgstr ""
 
-#: .\oj_problem\models.py:16
+#: .\oj_problem\models.py:19
 msgid "sample 2"
 msgstr ""
 
-#: .\oj_problem\models.py:17
+#: .\oj_problem\models.py:20
 msgid "sample 3"
 msgstr ""
 
-#: .\oj_problem\models.py:18
+#: .\oj_problem\models.py:21
 msgid "hint"
 msgstr ""
 
-#: .\oj_problem\models.py:19
+#: .\oj_problem\models.py:22
+msgid "difficulty"
+msgstr ""
+
+#: .\oj_problem\models.py:22
+msgid "level: 0 to 7, 0 for unset"
+msgstr ""
+
+#: .\oj_problem\models.py:24
 msgid "time limit (ms)"
 msgstr ""
 
-#: .\oj_problem\models.py:20
+#: .\oj_problem\models.py:25
 msgid "memory limit (MB)"
 msgstr ""
 
-#: .\oj_problem\models.py:21
+#: .\oj_problem\models.py:26
 msgid "hide"
 msgstr ""
 
-#: .\oj_problem\models.py:22 .\oj_submission\models.py:54
+#: .\oj_problem\models.py:27 .\oj_problem\models.py:51
+#: .\oj_submission\models.py:54
 msgid "create time"
 msgstr ""
 
-#: .\oj_problem\models.py:23
+#: .\oj_problem\models.py:28
 msgid "update time"
 msgstr ""
 
-#: .\oj_problem\models.py:26 .\oj_problem\models.py:39
-#: .\oj_submission\models.py:34
+#: .\oj_problem\models.py:31 .\oj_problem\models.py:41
+#: .\oj_problem\models.py:67 .\oj_submission\models.py:34
 msgid "problem"
 msgstr ""
 
-#: .\oj_problem\models.py:27
+#: .\oj_problem\models.py:32
 msgid "problems"
 msgstr ""
 
-#: .\oj_problem\models.py:31
-msgid "NULL"
+#: .\oj_problem\models.py:47 .\oj_submission\models.py:28
+#: .\oj_user\models.py:80
+msgid "user"
 msgstr ""
 
-#: .\oj_problem\models.py:32
-msgid "Traditional (CXX)"
-msgstr ""
-
-#: .\oj_problem\models.py:33
-msgid "Simple (Python3)"
-msgstr ""
-
-#: .\oj_problem\models.py:43
-msgid "test case id"
-msgstr ""
-
-#: .\oj_problem\models.py:44
-msgid "test case config"
-msgstr ""
-
-#: .\oj_problem\models.py:45
-msgid "spj id"
-msgstr ""
-
-#: .\oj_problem\models.py:47
-msgid "spj mode"
-msgstr ""
-
-#: .\oj_problem\models.py:53
-msgid "subcheck config"
-msgstr ""
-
-#: .\oj_problem\models.py:54
-msgid "spj"
-msgstr ""
-
-#: .\oj_problem\models.py:55
-msgid "subcheck"
-msgstr ""
-
-#: .\oj_problem\models.py:58
-msgid "testcase"
+#: .\oj_problem\models.py:54 .\oj_problem\models.py:55
+msgid "problem solve data"
 msgstr ""
 
 #: .\oj_problem\models.py:59
+msgid "NULL"
+msgstr ""
+
+#: .\oj_problem\models.py:60
+msgid "Traditional (CXX)"
+msgstr ""
+
+#: .\oj_problem\models.py:61
+msgid "Simple (Python3)"
+msgstr ""
+
+#: .\oj_problem\models.py:71
+msgid "test case id"
+msgstr ""
+
+#: .\oj_problem\models.py:72
+msgid "test case config"
+msgstr ""
+
+#: .\oj_problem\models.py:73
+msgid "spj id"
+msgstr ""
+
+#: .\oj_problem\models.py:75
+msgid "spj mode"
+msgstr ""
+
+#: .\oj_problem\models.py:81
+msgid "subcheck config"
+msgstr ""
+
+#: .\oj_problem\models.py:82
+msgid "spj"
+msgstr ""
+
+#: .\oj_problem\models.py:83
+msgid "subcheck"
+msgstr ""
+
+#: .\oj_problem\models.py:86
+msgid "testcase"
+msgstr ""
+
+#: .\oj_problem\models.py:87
 msgid "testcases"
 msgstr ""
 
@@ -169,10 +191,6 @@ msgstr ""
 
 #: .\oj_submission\models.py:22
 msgid "system error"
-msgstr ""
-
-#: .\oj_submission\models.py:28 .\oj_user\models.py:80
-msgid "user"
 msgstr ""
 
 #: .\oj_submission\models.py:38

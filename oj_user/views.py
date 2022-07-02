@@ -26,7 +26,7 @@ class LoginView(GenericAPIView):
             raise ValidationError(_('User is disabled.'))
         login(self.request, user)
         serializer = UserDetailSerializer(instance=user)
-        return Response({'user': serializer.data})
+        return Response(serializer.data)
 
 
 class LogoutView(APIView):
@@ -43,4 +43,4 @@ class InfoAPIView(GenericAPIView):
 
     def get(self, *args, **kwargs):
         serializer = self.get_serializer(instance=self.request.user)
-        return Response({'user': serializer.data})
+        return Response(serializer.data)

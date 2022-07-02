@@ -24,6 +24,7 @@ VENDOR_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'django_filters',
+    'taggit',
     'drf_yasg',
 ]
 

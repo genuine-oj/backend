@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.exceptions import NotFound
+from django_filters.rest_framework import DjangoFilterBackend
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -25,9 +26,10 @@ class ProblemPagination(LimitOffsetPagination):
 class ProblemViewSet(ModelViewSet):
     permission_classes = [Granted | IsAuthenticatedAndReadOnly]
     pagination_class = ProblemPagination
-    filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ['id', 'title']
+    filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
+    search_fields = ['title']
     ordering_fields = ['id', 'title']
+    filterset_fields = ['difficulty']
 
     def get_queryset(self):
         if self.request.user.is_staff:
