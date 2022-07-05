@@ -4,5 +4,7 @@ migrations
 .vscode
 db.sqlite3
 media
+judge_data/spj
+judge_data/test_data
 venv
 secret.key

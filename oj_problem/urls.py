@@ -1,7 +1,13 @@
 from rest_framework.routers import SimpleRouter
-from .views import ProblemViewSet
+from django.urls import path, include
+
+from .views import ProblemViewSet, DataViewSet, TagViewSet
 
 router = SimpleRouter()
 router.register('', ProblemViewSet, basename='problem')
+router.register('data', DataViewSet)
+router.register('tag', TagViewSet)
 
-urlpatterns = router.urls
+urlpatterns = [
+    path('', include(router.urls))
+]

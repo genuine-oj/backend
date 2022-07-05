@@ -47,6 +47,8 @@ class Granted(BasePermission):
 
         if not (request.user and request.user.is_authenticated):
             return False
+        if request.user and request.user.is_superuser:
+            return True
 
         queryset = self._queryset(view)
         perm = self.get_required_permission(request.method, queryset.model)

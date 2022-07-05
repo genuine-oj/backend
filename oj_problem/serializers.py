@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from taggit.serializers import (TagListSerializerField, TaggitSerializer)
+from taggit.models import Tag
 
 from .models import Problem, TestCase
 
@@ -61,7 +62,7 @@ class ProblemSerializer(TaggitSerializer, serializers.ModelSerializer):
 
 class ProblemDetailSerializer(TaggitSerializer, serializers.ModelSerializer):
     samples = SampleSerializer(source='*')
-    tags = TagListSerializerField()
+    tags = TagListSerializerField(required=False)
     solved = ProblemSolved(source='problem_solve')
 
     class Meta:
@@ -72,3 +73,9 @@ class ProblemDetailSerializer(TaggitSerializer, serializers.ModelSerializer):
         problem = Problem.objects.create(**validated_data)
         TestCase.objects.create(problem=problem)
         return problem
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['name', 'slug']
