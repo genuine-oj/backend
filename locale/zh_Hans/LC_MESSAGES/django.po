@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: genuine-oj-backend\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-07-02 21:13+0800\n"
-"PO-Revision-Date: 2022-07-02 13:16\n"
+"PO-Revision-Date: 2022-07-06 01:46\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: .\oj_problem\admin.py:18
 msgid "tags"
-msgstr ""
+msgstr "标签"
 
 #: .\oj_problem\apps.py:8
 msgid "Problem"
@@ -59,11 +59,11 @@ msgstr "提示"
 
 #: .\oj_problem\models.py:22
 msgid "difficulty"
-msgstr ""
+msgstr "难度"
 
 #: .\oj_problem\models.py:22
 msgid "level: 0 to 7, 0 for unset"
-msgstr ""
+msgstr "级别：0 至 7，0 为未设置"
 
 #: .\oj_problem\models.py:24
 msgid "time limit (ms)"
@@ -102,7 +102,7 @@ msgstr "用户"
 
 #: .\oj_problem\models.py:54 .\oj_problem\models.py:55
 msgid "problem solve data"
-msgstr ""
+msgstr "解题记录"
 
 #: .\oj_problem\models.py:59
 msgid "NULL"
@@ -226,7 +226,7 @@ msgstr "执行日志"
 
 #: .\oj_submission\models.py:55
 msgid "hidden"
-msgstr ""
+msgstr "隐藏"
 
 #: .\oj_submission\models.py:58
 msgid "submission"
@@ -298,13 +298,13 @@ msgstr "用户组"
 
 #: .\oj_user\serializers.py:21
 msgid "password"
-msgstr ""
+msgstr "密码"
 
 #: .\oj_user\views.py:24
 msgid "Uername or password error."
-msgstr ""
+msgstr "用户名或密码错误。"
 
 #: .\oj_user\views.py:26
 msgid "User is disabled."
-msgstr ""
+msgstr "用户不可用。"
 
