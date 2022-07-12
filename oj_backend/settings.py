@@ -16,6 +16,7 @@ else:
     ALLOWED_HOSTS = ['*']
 
 VENDOR_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -24,7 +25,6 @@ VENDOR_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'django_filters',
-    'taggit',
     'drf_yasg',
 ]
 
@@ -65,7 +65,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'oj_backend.wsgi.application'
+ASGI_APPLICATION = 'oj_backend.asgi.application'
 
 if PRODUCTION:
     DATABASES = {
@@ -82,6 +82,16 @@ else:
         }
     }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/0',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient'
+        }
+    }
+}
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -97,10 +107,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+
 LANGUAGE_CODE = 'en'
-
 LOCALE_PATHS = [BASE_DIR / 'locale']
-
 LANGUAGES = [
     ('en', 'English'),
     ('zh-Hans', '中文简体'),
@@ -109,15 +120,11 @@ LANGUAGES = [
 TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 STATIC_URL = '/static/'
-
 MEDIA_URL = '/media/'
-
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -140,19 +147,22 @@ SWAGGER_SETTINGS = {
 }
 
 CELERY_TIMEZONE = TIME_ZONE
-
 CELERY_ACCEPT_CONTENT = ['json']
-
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_BROKER_URL = 'amqp://127.0.0.1:5672'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/1'
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': ['redis://127.0.0.1:6379/2'],
+        }
+    }
+}
 
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
-
-JUDGE_SERVER = '127.0.0.1:18082'
-
+JUDGE_SERVER = '127.0.0.1:8080'
 JUDGE_DATA_ROOT = BASE_DIR / 'judge_data'
-
+SUBMISSION_ROOT = JUDGE_DATA_ROOT / 'submission'
 TEST_DATA_ROOT = JUDGE_DATA_ROOT / 'test_data'
-
 SPJ_ROOT = JUDGE_DATA_ROOT / 'spj'

@@ -14,12 +14,11 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelViewSet
-from taggit.models import Tag
 
 from oj_backend.permissions import Granted, IsAuthenticatedAndReadOnly
-from .models import Problem, TestCase
+from .models import Problem, TestCase, Tags
 from .serializers import ProblemSerializer, ProblemDetailSerializer, \
-    TestCaseDetailSerializer, TestCaseUpdateSerializer, TagSerializer
+    TestCaseDetailSerializer, TestCaseUpdateSerializer, TagsSerializer
 
 
 class ProblemPagination(LimitOffsetPagination):
@@ -107,7 +106,7 @@ class DataViewSet(GenericViewSet):
         return Response(serializer.data)
 
 
-class TagViewSet(ReadOnlyModelViewSet):
-    queryset = Tag.objects.all()
+class TagsViewSet(ReadOnlyModelViewSet):
+    queryset = Tags.objects.all()
     permission_classes = [IsAuthenticatedAndReadOnly]
-    serializer_class = TagSerializer
+    serializer_class = TagsSerializer

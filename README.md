@@ -8,7 +8,7 @@
 * Python ≥ 3.7
 * Django ≥ 3.0
 * Redis
-* RabbitMQ `推荐`
+* RabbitMQ
 
 ### Install | 安装
 
@@ -30,7 +30,20 @@ python3 manage.py migrate
 |-oj_problem 题目数据
 |-oj_submission 提交数据&评测任务管理
 |-oj_user 用户管理
-|-media
+|-media 媒体文件
+|-judge_data 评测数据
   |-spj 特殊评测源代码，可以存放于其他位置，需要修改SPJ_ROOT
-  |-test-data 评测数据，可以存放于其他位置，需要修改TEST_DATA_ROOT
+  |-test_data 评测数据，可以存放于其他位置，需要修改TEST_DATA_ROOT
+  |-submission 用户输出，可以存放于其他位置，需要修改SUBMISSION_ROOT
+```
+
+## Commands | 常用命令
+```shell
+Celery -A oj_backend worker -l info -P eventlet # windows
+Celery -A oj_backend worker -l info #linux
+```
+```shell
+# Translation
+python3 manage.py makemessages -l en --ignore=venv
+python3 manage.py compilemessages --ignore=venv
 ```

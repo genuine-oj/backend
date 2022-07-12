@@ -1,7 +1,8 @@
 from django.conf import settings
 import json
-import socket
-import struct
+import base64
+from pathlib import Path
+from websocket import create_connection
 import enum
 
 from .models import StatusChoices
@@ -30,28 +31,14 @@ ResultMapping = {
 
 class JudgeClient(object):
     def __init__(self):
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        addr = settings.JUDGE_SERVER.split(':', 1)
-        self.client.connect((str(addr[0]), int(addr[1])))
+        self.client = create_connection(f'ws://{settings.JUDGE_SERVER}/')
 
-    def _recv(self):
-        pkt_size = self.client.recv(4)
-        pkt_size = struct.unpack('i', pkt_size)[0]
-        if pkt_size <= 1024:
-            data_pkt = self.client.recv(pkt_size)
-        else:
-            data_pkt = b''
-            while len(data_pkt) < pkt_size:
-                unfinished_len = pkt_size - len(data_pkt)
-                if unfinished_len > 1024:
-                    data = self.client.recv(1024)
-                else:
-                    data = self.client.recv(unfinished_len)
-                data_pkt += data
+    def recv(self):
         try:
-            data = json.loads(data_pkt.decode('utf-8'))
+            data = json.loads(self.client.recv())
         except json.decoder.JSONDecodeError:
             return {
+                'type': 'final',
                 'status': JudgeResult.SYSTEM_ERROR,
                 'score': 0,
                 'statistics': {
@@ -72,11 +59,20 @@ class JudgeClient(object):
             'code': code,
             'limit': limit
         }
-        payload = json.dumps(task_data).encode('utf-8')
-        self.client.send(struct.pack('i', len(payload)))
-        self.client.send(payload)
-
-        result = self._recv()
+        self.client.send(json.dumps(task_data))
+        detail_path = Path(f'{settings.SUBMISSION_ROOT}/{task_id}')
+        while True:
+            result = self.recv()
+            if result['type'] == 'compile':
+                print(f'Compile log: {result["data"]}')
+                detail_path.mkdir(exist_ok=True)
+            elif result['type'] == 'part':
+                detail_file = detail_path / f'{result["test_case"]}.out'
+                output = base64.b64decode(result['output'])
+                detail_file.write_bytes(output)
+                print(f'{result["test_case"]}: {output}')
+            elif result['type'] == 'final':
+                break
         self.client.close()
         return result
 

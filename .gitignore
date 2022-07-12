@@ -4,7 +4,11 @@ migrations
 .vscode
 db.sqlite3
 media
-judge_data/spj
-judge_data/test_data
+judge_data/spj/*
+!judge_data/spj/.gitkeep
+judge_data/test_data/*
+!judge_data/test_data/.gitkeep
+judge_data/submission/*
+!judge_data/submission/.gitkeep
 venv
 secret.key

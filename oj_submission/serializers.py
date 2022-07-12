@@ -5,7 +5,7 @@ from .models import Submission
 from .tasks import judge
 from oj_problem.models import Problem
 from oj_user.serializers import UserSerializer
-from oj_problem.serializers import ProblemSerializer
+from oj_problem.serializers import ProblemBriefSerializer
 
 
 class SizeField(serializers.ReadOnlyField):
@@ -19,7 +19,7 @@ class SizeField(serializers.ReadOnlyField):
 
 class SubmissionSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    problem = ProblemSerializer()
+    problem = ProblemBriefSerializer()
     source_size = SizeField(source='source')
 
     class Meta:
@@ -31,8 +31,8 @@ class SubmissionSerializer(serializers.ModelSerializer):
 
 class SubmissionDetailSerializer(serializers.ModelSerializer):
     user = UserSerializer(default=serializers.CurrentUserDefault())
-    problem = ProblemSerializer(read_only=True)
-    problem_id = serializers.IntegerField(required=False)
+    problem = ProblemBriefSerializer(read_only=True)
+    problem_id = serializers.IntegerField(write_only=True)
 
     def create(self, validated_data):
         problem_id = validated_data.pop('problem_id')
