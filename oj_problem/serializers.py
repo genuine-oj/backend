@@ -72,7 +72,11 @@ class ProblemDetailSerializer(serializers.ModelSerializer):
         exclude = ['sample_1', 'sample_2', 'sample_3']
 
     def create(self, validated_data):
+        # TODO: Recognise tag by name rather than id.
+        tags = validated_data.pop('tags')
         problem = Problem.objects.create(**validated_data)
+        problem.tags.set(tags)
+        problem.save()
         TestCase.objects.create(problem=problem)
         return problem
 
