@@ -99,6 +99,7 @@ class DataViewSet(GenericViewSet):
                 file_name, file_ext = file.rsplit('.', 1)
                 if file_ext == 'ans':
                     file_data = test_cases.read(file)
+                    file_data = b'\n'.join(map(bytes.rstrip, file_data.rstrip().splitlines()))
                     file_hash = hashlib.md5(file_data).hexdigest()
                     (data_dir / f'{file_name}.md5').write_text(file_hash, encoding='utf-8')
         serializer.save()
