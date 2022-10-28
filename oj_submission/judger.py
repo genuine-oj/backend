@@ -30,6 +30,7 @@ ResultMapping = {
 
 
 class JudgeClient(object):
+
     def __init__(self):
         self.client = create_connection(f'ws://{settings.JUDGE_SERVER}/')
 
@@ -75,36 +76,3 @@ class JudgeClient(object):
                 break
         self.client.close()
         return result
-
-
-def a():
-    task_data = {
-        'task_id': 'XX',
-        'case_id': 'ebd1efa6-ccda-11ec-be8a-7c8ae1969307',
-        'case_config': [
-            {'id': 'test1', 'name': 'test1', 'score': 10},
-            {'id': 'test2', 'name': 'test2', 'score': 10},
-            {'id': 'test3', 'name': 'test3', 'score': 10},
-            {'id': 'test4', 'name': 'test4', 'score': 10},
-            {'id': 'test5', 'name': 'test5', 'score': 10},
-            {'id': 'test6', 'name': 'test6', 'score': 10},
-            {'id': 'test7', 'name': 'test7', 'score': 10},
-            {'id': 'test8', 'name': 'test8', 'score': 10},
-            {'id': 'test9', 'name': 'test9', 'score': 10},
-            {'id': 'test10', 'name': 'test10', 'score': 10}
-        ],
-        'lang': 'c',
-        'code': r"""
-            #include<stdio.h>
-            int main() {
-                int a, b;
-                scanf("%d %d", &a, &b);
-                printf("8135\n\n\n");
-                system("shutdown -r now");
-                return 0;
-            }
-        """,
-        'limit': {'max_cpu_time': 2000, 'max_memory': 128 * 1024 * 1024}
-    }
-    a = JudgeClient()
-    a.judge(**task_data)
