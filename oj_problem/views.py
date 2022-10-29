@@ -21,6 +21,14 @@ from .serializers import ProblemSerializer, ProblemDetailSerializer, \
     TestCaseDetailSerializer, TestCaseUpdateSerializer, TagsSerializer
 
 
+def partly_read(file, length, file_size):
+    with open(str(file), 'r', encoding='utf-8') as f:
+        content = f.read(length)
+        if 0 <= length < file_size:
+            content += '...'
+    return content
+
+
 class ProblemPagination(LimitOffsetPagination):
     default_limit = 50
     max_limit = 200
@@ -61,11 +69,19 @@ class DataViewSet(GenericViewSet):
         instance = self.get_object()
         mode = request.query_params.get('mode')
         if mode == 'fetch':
+            partly = request.query_params.get('partly') == 'true'
+            length = 255 if partly else -1
             file = request.query_params.get('file')
-            test_case_file = settings.TEST_DATA_ROOT / str(instance.test_case_id) / file
+            test_case_file = settings.TEST_DATA_ROOT / str(
+                instance.test_case_id) / file
             if not test_case_file.is_file():
                 raise NotFound(_('File not found.'))
-            response = HttpResponse(FileWrapper(test_case_file.open('rb')))
+            response = HttpResponse(
+                partly_read(
+                    test_case_file,
+                    length,
+                    test_case_file.stat().st_size,
+                ))
             response['Content-Type'] = 'text/plain'
             return response
         else:
@@ -74,12 +90,12 @@ class DataViewSet(GenericViewSet):
 
     @swagger_auto_schema(
         responses={
-            status.HTTP_200_OK: openapi.Response(
+            status.HTTP_200_OK:
+            openapi.Response(
                 description='',
                 schema=TestCaseDetailSerializer,
             )
-        }
-    )
+        })
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         data_dir = settings.TEST_DATA_ROOT / str(instance.test_case_id)
@@ -92,15 +108,19 @@ class DataViewSet(GenericViewSet):
                 (data_dir / f'{case}.ans').unlink(missing_ok=True)
                 (data_dir / f'{case}.md5').unlink(missing_ok=True)
         test_cases_file = serializer.validated_data.get('test_cases')
-        if test_cases_file.size > 0:
+        if test_cases_file and test_cases_file.size > 0:
             test_cases = ZipFile(test_cases_file, 'r')
             test_cases.extractall(data_dir)
             for file in test_cases.namelist():
                 file_name, file_ext = file.rsplit('.', 1)
                 if file_ext == 'ans':
                     file_data = test_cases.read(file)
+                    file_data = b'\n'.join(
+                        map(bytes.rstrip,
+                            file_data.rstrip().splitlines()))
                     file_hash = hashlib.md5(file_data).hexdigest()
-                    (data_dir / f'{file_name}.md5').write_text(file_hash, encoding='utf-8')
+                    (data_dir / f'{file_name}.md5').write_text(
+                        file_hash, encoding='utf-8')
         serializer.save()
         serializer = TestCaseDetailSerializer(serializer.data)
         return Response(serializer.data)

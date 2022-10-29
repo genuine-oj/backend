@@ -52,12 +52,18 @@ class SubmissionViewSet(ModelViewSet):
         if mode == 'fetch':
             length = -1
         else:
-            length = 100
-            ans_file = settings.TEST_DATA_ROOT / str(instance.problem.test_case.test_case_id) / f'{name}.ans'
-            out_file = settings.SUBMISSION_ROOT / str(instance.id) / f'{name}.out'
-            ans = out = 'FILE NOT FOUND'
+            length = 255
+            ans_file = settings.TEST_DATA_ROOT / str(
+                instance.problem.test_case.test_case_id) / f'{name}.ans'
+            in_file = settings.TEST_DATA_ROOT / str(
+                instance.problem.test_case.test_case_id) / f'{name}.in'
+            out_file = settings.SUBMISSION_ROOT / str(
+                instance.id) / f'{name}.out'
+            ans = _in = out = 'FILE NOT FOUND'
             if ans_file.exists():
                 ans = partly_read(ans_file, length, ans_file.stat().st_size)
+            if in_file.exists():
+                _in = partly_read(in_file, length, in_file.stat().st_size)
             if out_file.exists():
                 out = partly_read(out_file, length, out_file.stat().st_size)
-            return Response({'ans': ans, 'out': out})
+            return Response({'ans': ans, 'in': _in, 'out': out})

@@ -12,12 +12,12 @@ def get_default_sample():
 class Problem(models.Model):
     title = models.CharField(_('title'), max_length=50)
     description = models.TextField(_('description'))
-    input_format = models.TextField(_('input format'), max_length=200, blank=True, default='')
-    output_format = models.TextField(_('output format'), max_length=200, blank=True, default='')
+    input_format = models.TextField(_('input format'), blank=True, default='')
+    output_format = models.TextField(_('output format'), blank=True, default='')
     sample_1 = models.JSONField(_('sample 1'), default=get_default_sample)
     sample_2 = models.JSONField(_('sample 2'), default=get_default_sample)
     sample_3 = models.JSONField(_('sample 3'), default=get_default_sample)
-    hint = models.TextField(_('hint'), max_length=400, blank=True, default='')
+    hint = models.TextField(_('hint'), blank=True, default='')
     tags = models.ManyToManyField(
         'Tags',
         verbose_name=_('tags'),

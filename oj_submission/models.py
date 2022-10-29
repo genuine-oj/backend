@@ -8,6 +8,7 @@ from oj_user.models import User
 class LanguageChoices(models.TextChoices):
     C = 'c', 'C'
     CPP = 'cpp', 'C++'
+    PYTHON38 = 'python38', 'Python 3.8'
 
 
 class StatusChoices(models.IntegerChoices):
@@ -27,30 +28,35 @@ class Submission(models.Model):
         User,
         verbose_name=_('user'),
         related_name='submissions',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
     problem = models.ForeignKey(
         Problem,
         verbose_name=_('problem'),
         related_name='submissions',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
     source = models.TextField(_('source code'), max_length=5000)
     language = models.CharField(
         _('language'),
         max_length=10,
-        choices=LanguageChoices.choices
+        choices=LanguageChoices.choices,
     )
     status = models.IntegerField(
         _('status'),
         choices=StatusChoices.choices,
-        default=StatusChoices.PENDING
+        default=StatusChoices.PENDING,
     )
     score = models.IntegerField(_('score'), default=0)
     execute_time = models.IntegerField(_('execute time'), default=0)
     execute_memory = models.IntegerField(_('execute memory'), default=0)
     detail = models.JSONField(_('execute detail'), default=list)
-    log = models.TextField(_('execute log'), max_length=400, default='', blank=True)
+    log = models.TextField(
+        _('execute log'),
+        max_length=400,
+        default='',
+        blank=True,
+    )
     create_time = models.DateTimeField(_('create time'), auto_now_add=True)
     is_hidden = models.BooleanField(_('hidden'), default=False)
 
