@@ -8,7 +8,7 @@ from oj_user.models import User
 class LanguageChoices(models.TextChoices):
     C = 'c', 'C'
     CPP = 'cpp', 'C++'
-    PYTHON = 'python', 'Python'
+    PYTHON38 = 'python38', 'Python 3.8'
 
 
 class StatusChoices(models.IntegerChoices):

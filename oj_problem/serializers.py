@@ -41,7 +41,7 @@ class TestCaseDetailSerializer(serializers.ModelSerializer):
 
 
 class TestCaseUpdateSerializer(serializers.ModelSerializer):
-    test_cases = serializers.FileField(allow_empty_file=True)
+    test_cases = serializers.FileField(allow_empty_file=True, required=False)
     spj_source = serializers.CharField(allow_null=True)
     delete_cases = serializers.JSONField()
 
@@ -85,10 +85,19 @@ class TagsSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
+class TagsField(serializers.Field):
+
+    def to_representation(self, value):
+        return TagsSerializer(value, many=True).data
+
+    def to_internal_value(self, data):
+        return [Tags.objects.get(id=i) for i in data]
+
+
 class ProblemDetailSerializer(serializers.ModelSerializer):
     samples = SampleSerializer(source='*')
     solved = ProblemSolved(source='problem_solve')
-    tags = TagsSerializer(many=True)
+    tags = TagsField()
 
     class Meta:
         model = Problem
