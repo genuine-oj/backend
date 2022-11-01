@@ -37,6 +37,7 @@ class JudgeClient(object):
     def recv(self):
         try:
             data = json.loads(self.client.recv())
+            print(data)
         except json.decoder.JSONDecodeError:
             return {
                 'type': 'final',
@@ -51,11 +52,13 @@ class JudgeClient(object):
             }
         return data
 
-    def judge(self, task_id, case_id, case_config, lang, code, limit):
+    def judge(self, task_id, case_id, test_case_config, subcheck_config, lang, code,
+              limit):
         task_data = {
             'task_id': str(task_id),
             'case_id': str(case_id),
-            'case_config': case_config,
+            'test_case_config': test_case_config,
+            'subcheck_config': subcheck_config,
             'lang': lang,
             'code': code,
             'limit': limit

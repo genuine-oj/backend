@@ -39,8 +39,8 @@ python3 manage.py migrate
 
 ## Commands | 常用命令
 ```shell
-Celery -A oj_backend worker -l info -P eventlet # windows
-Celery -A oj_backend worker -l info #linux
+celery -A oj_backend worker -l info -P eventlet # windows
+celery -A oj_backend worker -l info #linux
 ```
 ```shell
 # Translation
