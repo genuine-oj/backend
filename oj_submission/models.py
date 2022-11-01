@@ -60,6 +60,10 @@ class Submission(models.Model):
     create_time = models.DateTimeField(_('create time'), auto_now_add=True)
     is_hidden = models.BooleanField(_('hidden'), default=False)
 
+    @property
+    def use_subcheck(self):
+        return self.problem.test_case.use_subcheck
+
     class Meta:
         verbose_name = _('submission')
         verbose_name_plural = _('submissions')
