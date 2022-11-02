@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny
 urlpatterns = [
     path('problem/', include('oj_problem.urls')),
     path('submission/', include('oj_submission.urls')),
+    path('contest/', include('oj_contest.urls')),
     path('user/', include('oj_user.urls')),
     path('admin/', admin.site.urls),
 ]

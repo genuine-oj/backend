@@ -32,6 +32,7 @@ LOCAL_APPS = [
     'oj_user.apps.UserConfig',
     'oj_problem.apps.ProblemConfig',
     'oj_submission.apps.SubmissionConfig',
+    'oj_contest.apps.ContestConfig',
 ]
 
 INSTALLED_APPS = VENDOR_APPS + LOCAL_APPS
@@ -94,16 +95,20 @@ CACHES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 
@@ -138,7 +143,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'oj_backend.authentication.SessionAuthentication',
     ],
-    'EXCEPTION_HANDLER': 'oj_backend.utils.exception_handler',
+    'EXCEPTION_HANDLER':
+    'oj_backend.utils.exception_handler',
 }
 
 SWAGGER_SETTINGS = {
