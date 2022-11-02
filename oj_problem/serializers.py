@@ -36,7 +36,7 @@ class TestCaseDetailSerializer(serializers.ModelSerializer):
         model = TestCase
         fields = [
             'test_case_config', 'spj_mode', 'subcheck_config', 'use_spj',
-            'use_subcheck'
+            'use_subcheck', 'allow_download'
         ]
 
 
@@ -49,7 +49,8 @@ class TestCaseUpdateSerializer(serializers.ModelSerializer):
         model = TestCase
         fields = [
             'test_cases', 'test_case_config', 'spj_source', 'spj_mode',
-            'delete_cases', 'subcheck_config', 'use_spj', 'use_subcheck'
+            'delete_cases', 'subcheck_config', 'use_spj', 'use_subcheck',
+            'allow_download'
         ]
 
 
@@ -68,7 +69,10 @@ class ProblemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Problem
-        fields = ['id', 'title', 'difficulty', 'tags', 'solved']
+        fields = [
+            'id', 'title', 'difficulty', 'tags', 'solved', 'submission_count',
+            'solved_count'
+        ]
 
 
 class ProblemBriefSerializer(serializers.ModelSerializer):

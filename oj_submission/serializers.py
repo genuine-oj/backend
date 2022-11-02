@@ -41,7 +41,8 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         problem_id = validated_data.pop('problem_id')
-        validated_data['problem'] = Problem.objects.get(id=problem_id)
+        problem = Problem.objects.get(id=problem_id)
+        validated_data['problem'] = problem
         submission = Submission.objects.create(**validated_data)
         judge.delay(
             submission.id, submission.problem.test_case.test_case_id,
@@ -49,16 +50,28 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
             submission.problem.test_case.subcheck_config, submission.language,
             submission.source, {
                 'max_cpu_time': submission.problem.time_limit,
-                'max_memory': submission.problem.memory_limit * 1024 * 1024
+                'max_memory': submission.problem.memory_limit * 1024 * 1024,
             })
+        problem.submission_count += 1
+        problem.save(update_fields=['submission_count'])
         return submission
 
     class Meta:
         model = Submission
         fields = [
-            'id', 'user', 'problem', 'problem_id', 'source', 'language',
-            'status', 'score', 'execute_time', 'execute_memory', 'detail',
-            'log', 'create_time',
+            'id',
+            'user',
+            'problem',
+            'problem_id',
+            'source',
+            'language',
+            'status',
+            'score',
+            'execute_time',
+            'execute_memory',
+            'detail',
+            'log',
+            'create_time',
         ]
         read_only_fields = [
             'status', 'score', 'execute_time', 'execute_memory', 'detail',
