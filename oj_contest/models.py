@@ -7,15 +7,16 @@ from oj_problem.models import Problem
 
 class Contest(models.Model):
     title = models.CharField(_('title'), max_length=50)
-    description = models.TextField(_('description'))
-    problem_list_mode = models.BooleanField(
-        _('problem list mode'),
-        default=False,
-    )
+    description = models.TextField(_('description'), null=True, blank=True)
+    problem_list_mode = models.BooleanField(_('problem list mode'),
+                                            default=False)
     start_time = models.DateTimeField(_('start time'), null=True, blank=True)
     end_time = models.DateTimeField(_('end time'), null=True, blank=True)
     is_hidden = models.BooleanField(_('hide'), default=False)
-    allow_sign_up = models.BooleanField(_('allow sign up'), default=False)
+    allow_sign_up = models.BooleanField(_('allow sign up'), default=True)
+
+    problems = models.ManyToManyField(Problem, through='ContestProblem')
+    users = models.ManyToManyField(User, through='ContestUser')
 
     class Meta:
         verbose_name = _('contest')
@@ -29,7 +30,6 @@ class ContestProblem(models.Model):
     contest = models.ForeignKey(
         Contest,
         verbose_name=_('contest'),
-        related_name='problems',
         on_delete=models.CASCADE,
     )
     problem = models.ForeignKey(
@@ -51,7 +51,6 @@ class ContestUser(models.Model):
     contest = models.ForeignKey(
         Contest,
         verbose_name=_('contest'),
-        related_name='users',
         on_delete=models.CASCADE,
     )
     user = models.ForeignKey(

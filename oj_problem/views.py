@@ -40,7 +40,7 @@ class ProblemViewSet(ModelViewSet):
     lookup_value_regex = r'\d+'
     pagination_class = ProblemPagination
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
-    search_fields = ['title']
+    search_fields = ['id', 'title']
     ordering_fields = ['id', 'title']
     filterset_fields = ['difficulty']
 
