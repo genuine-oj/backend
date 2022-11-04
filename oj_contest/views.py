@@ -103,7 +103,11 @@ class ContestViewSet(ModelViewSet):
         for i in res['users']:
             i.pop('latest_submit')
         res['time'] = timezone.now().isoformat()
-        cache.set(f'contest_ranking_{pk}', res, 60)
+        cache.set(
+            f'contest_ranking_{pk}',
+            res,
+            60 if contest.end_time > timezone.now() else 86400,
+        )
         return Response(res)
 
     @action(detail=True,

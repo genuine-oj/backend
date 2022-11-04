@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 from oj_backend.permissions import IsAuthenticatedAndReadOnly
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import GenericAPIView
@@ -12,7 +13,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from .models import User
-from .serializers import LoginSerializer, UserDetailSerializer, UserSerializer
+from .serializers import LoginSerializer, UserDetailSerializer, UserSerializer, ChangePasswordSerializer
 
 
 class UserPagination(LimitOffsetPagination):
@@ -34,6 +35,15 @@ class UserViewSet(ReadOnlyModelViewSet):
         if self.action == 'list':
             return UserSerializer
         return UserDetailSerializer
+
+    @action(detail=False, methods=['post'], url_path='change_password')
+    def change_password(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = request.user
+        user.set_password(serializer.validated_data.get('new_password'))
+        user.save()
+        return Response({'detail': _('Password changed.')})
 
 
 class LoginView(GenericAPIView):
@@ -62,6 +72,22 @@ class LogoutView(APIView):
     def get(self, *args, **kwargs):
         logout(self.request)
         return Response(status=HTTP_204_NO_CONTENT)
+
+
+class RegisterView(GenericAPIView):
+    authentication_classes = []
+    permission_classes = []
+    serializer_class = LoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        username = serializer.validated_data.get('username')
+        password = serializer.validated_data.get('password')
+        user = User.objects.create_user(username=username, password=password)
+        login(request, user)
+        serializer = UserDetailSerializer(instance=user)
+        return Response(serializer.data)
 
 
 class InfoAPIView(GenericAPIView):
