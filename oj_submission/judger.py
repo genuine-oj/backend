@@ -37,7 +37,6 @@ class JudgeClient(object):
     def recv(self):
         try:
             data = json.loads(self.client.recv())
-            print(data)
         except json.decoder.JSONDecodeError:
             return {
                 'type': 'final',
@@ -52,8 +51,8 @@ class JudgeClient(object):
             }
         return data
 
-    def judge(self, task_id, case_id, test_case_config, subcheck_config, lang, code,
-              limit):
+    def judge(self, task_id, case_id, test_case_config, subcheck_config, lang,
+              code, limit):
         task_data = {
             'task_id': str(task_id),
             'case_id': str(case_id),
@@ -68,13 +67,13 @@ class JudgeClient(object):
         while True:
             result = self.recv()
             if result['type'] == 'compile':
-                print(f'Compile log: {result["data"]}')
+                # print(f'Compile log: {result["data"]}')
                 detail_path.mkdir(exist_ok=True)
             elif result['type'] == 'part':
                 detail_file = detail_path / f'{result["test_case"]}.out'
                 output = base64.b64decode(result['output'])
                 detail_file.write_bytes(output)
-                print(f'{result["test_case"]}: {output}')
+                # print(f'{result["test_case"]}: {output}')
             elif result['type'] == 'final':
                 break
         self.client.close()

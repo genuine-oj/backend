@@ -10,6 +10,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
@@ -42,7 +43,7 @@ class ProblemViewSet(ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
     search_fields = ['id', 'title']
     ordering_fields = ['id', 'title']
-    filterset_fields = ['difficulty']
+    filterset_fields = ['difficulty', 'tags__id']
 
     def get_queryset(self):
         if self.request.user.is_staff:
@@ -129,5 +130,17 @@ class DataViewSet(GenericViewSet):
 
 class TagsViewSet(ReadOnlyModelViewSet):
     queryset = Tags.objects.all()
-    permission_classes = [IsAuthenticatedAndReadOnly]
+    permission_classes = [Granted | IsAuthenticatedAndReadOnly]
     serializer_class = TagsSerializer
+
+    def create(self, request, *args, **kwargs):
+        create = request.data.get('create')
+        for i in create:
+            Tags.objects.create(name=i)
+        update = request.data.get('update')
+        for i in update:
+            Tags.objects.filter(id=i['id']).update(name=i['name'])
+        delete = request.data.get('delete')
+        for i in delete:
+            Tags.objects.filter(id=i).delete()
+        return Response(TagsSerializer(Tags.objects.all(), many=True).data)
