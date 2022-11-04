@@ -48,8 +48,8 @@ class UsersField(serializers.Field):
 
 class ContestDetailSerializer(serializers.ModelSerializer):
     joined = ContestJoined(source='users')
-    problems = ProblemsField()
-    users = UsersField()
+    problems = ProblemsField(required=False)
+    users = UsersField(required=False)
 
     class Meta:
         model = Contest
