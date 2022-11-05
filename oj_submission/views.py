@@ -1,13 +1,16 @@
 from django.conf import settings
+from django.http import HttpResponse, StreamingHttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.pagination import LimitOffsetPagination
+from oj_backend.permissions import (Granted, IsAuthenticatedAndReadCreate,
+                                    IsAuthenticatedAndReadOnly)
 from rest_framework.decorators import action
+from rest_framework.mixins import CreateModelMixin
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from oj_backend.permissions import Granted, IsAuthenticatedAndReadCreate, IsAuthenticatedAndReadOnly
 from .models import Submission
-from .serializers import SubmissionSerializer, SubmissionDetailSerializer
+from .serializers import SubmissionDetailSerializer, SubmissionSerializer
 
 
 class SubmissionPagination(LimitOffsetPagination):
@@ -23,7 +26,17 @@ def partly_read(file, length, file_size):
     return content
 
 
-class SubmissionViewSet(ModelViewSet):
+def file_iterator(file, chunk_size=512):
+    with open(file) as f:
+        while True:
+            c = f.read(chunk_size)
+            if c:
+                yield c
+            else:
+                break
+
+
+class SubmissionViewSet(ReadOnlyModelViewSet, CreateModelMixin):
     permission_classes = [Granted | IsAuthenticatedAndReadCreate]
     pagination_class = SubmissionPagination
     filter_backends = [DjangoFilterBackend]
@@ -49,16 +62,20 @@ class SubmissionViewSet(ModelViewSet):
     def test_point(self, request, name, *args, **kwargs):
         instance = self.get_object()
         mode = self.request.query_params.get('mode')
+        ans_file = settings.TEST_DATA_ROOT / str(
+            instance.problem.test_case.test_case_id) / f'{name}.ans'
+        in_file = settings.TEST_DATA_ROOT / str(
+            instance.problem.test_case.test_case_id) / f'{name}.in'
+        out_file = settings.SUBMISSION_ROOT / str(instance.id) / f'{name}.out'
         if mode == 'fetch':
             length = -1
+            file = self.request.query_params.get('file')
+            if file not in ['in', 'out', 'ans']:
+                return HttpResponse('FILE NOT FOUND', status=404)
+            file = {'in': in_file, 'out': out_file, 'ans': ans_file}[file]
+            return StreamingHttpResponse(file_iterator(file))
         else:
             length = 255
-            ans_file = settings.TEST_DATA_ROOT / str(
-                instance.problem.test_case.test_case_id) / f'{name}.ans'
-            in_file = settings.TEST_DATA_ROOT / str(
-                instance.problem.test_case.test_case_id) / f'{name}.in'
-            out_file = settings.SUBMISSION_ROOT / str(
-                instance.id) / f'{name}.out'
             ans = _in = out = 'FILE NOT FOUND'
             if ans_file.exists():
                 ans = partly_read(ans_file, length, ans_file.stat().st_size)

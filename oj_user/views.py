@@ -43,7 +43,7 @@ class UserViewSet(ReadOnlyModelViewSet):
         user = request.user
         user.set_password(serializer.validated_data.get('new_password'))
         user.save()
-        return Response({'detail': _('Password changed.')})
+        return Response(status=HTTP_204_NO_CONTENT)
 
 
 class LoginView(GenericAPIView):

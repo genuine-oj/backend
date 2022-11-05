@@ -23,6 +23,6 @@ def judge(task_id, case_id, test_case_config, subcheck_config, lang, code,
         'status', 'score', 'execute_time', 'execute_memory', 'detail', 'log'
     ])
     if submission.status == StatusChoices.ACCEPTED:
-        submission.problem.solved_count += 1
+        submission.problem.accepted_count += 1
         ProblemSolve.objects.get_or_create(user=submission.user,
                                         problem=submission.problem)

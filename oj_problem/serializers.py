@@ -70,8 +70,8 @@ class ProblemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Problem
         fields = [
-            'id', 'title', 'difficulty', 'tags', 'solved', 'submission_count',
-            'solved_count'
+            'id', 'title', 'difficulty', 'tags', 'solved', 'is_hidden',
+            'submission_count', 'accepted_count'
         ]
 
 
