@@ -1,22 +1,53 @@
 from pathlib import Path
 import os
-import datetime
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = open(BASE_DIR / 'secret.key', 'r').read()
 
-PRODUCTION = os.getenv('MODE', 'development').lower() == 'production'
+MODE = os.getenv('OJ_MODE', 'development').lower()
 
-if PRODUCTION:
+SQL_DATA = {
+    i: os.getenv(f'OJ_SQL_{i}', j)
+    for i, j in [
+        ('HOST', 'localhost'),
+        ('PORT', '5432'),
+        ('USER', ''),
+        ('PASSWORD', ''),
+        ('NAME', 'oj'),
+    ]
+}
+
+if MODE == 'production':
     DEBUG = False
     ALLOWED_HOSTS = []
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            **SQL_DATA,
+        },
+    }
+elif MODE == 'test':
+    DEBUG = True
+    ALLOWED_HOSTS = ['*']
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            **SQL_DATA,
+        },
+    }
 else:
     DEBUG = True
     ALLOWED_HOSTS = ['*']
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 VENDOR_APPS = [
-    'channels',
+    # 'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -66,22 +97,8 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = 'oj_backend.asgi.application'
-
-if PRODUCTION:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+WSGI_APPLICATION = 'oj_backend.wsgi.application'
+# ASGI_APPLICATION = 'oj_backend.asgi.application'
 
 CACHES = {
     'default': {

@@ -12,3 +12,5 @@ judge_data/submission/*
 !judge_data/submission/.gitkeep
 venv
 secret.key
+*.env
+uwsgi.ini
