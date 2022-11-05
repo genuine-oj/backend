@@ -47,8 +47,9 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
         judge.delay(
             submission.id, submission.problem.test_case.test_case_id,
             submission.problem.test_case.test_case_config,
-            submission.problem.test_case.subcheck_config, submission.language,
-            submission.source, {
+            submission.problem.test_case.subcheck_config
+            if submission.problem.test_case.use_subcheck else None,
+            submission.language, submission.source, {
                 'max_cpu_time': submission.problem.time_limit,
                 'max_memory': submission.problem.memory_limit * 1024 * 1024,
             })
@@ -59,19 +60,9 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Submission
         fields = [
-            'id',
-            'user',
-            'problem',
-            'problem_id',
-            'source',
-            'language',
-            'status',
-            'score',
-            'execute_time',
-            'execute_memory',
-            'detail',
-            'log',
-            'create_time',
+            'id', 'user', 'problem', 'problem_id', 'source', 'language',
+            'status', 'score', 'execute_time', 'execute_memory', 'detail',
+            'log', 'create_time'
         ]
         read_only_fields = [
             'status', 'score', 'execute_time', 'execute_memory', 'detail',

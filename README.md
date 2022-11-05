@@ -17,16 +17,17 @@ pip3 install -r requirements.txt
 echo $(python3 -c "from django.core.management import utils;print(utils.get_random_secret_key())") > secret.key
 python3 manage.py makemigrations oj_user
 python3 manage.py migrate
-python3 manage.py makemigrations oj_problem oj_submission
+python3 manage.py makemigrations oj_problem oj_submission oj_contest
 python3 manage.py migrate
 ```
 
 ### API document | 接口文档
-[API Fox (Simplified Chinese)](https://www.apifox.cn/apidoc/project-931688)
+[API Fox (Simplified Chinese)](https://genuine-oj.apifox.cn/)
 
 ### Structure | 目录结构
 
 ```text
+|-oj_contest 比赛数据
 |-oj_problem 题目数据
 |-oj_submission 提交数据&评测任务管理
 |-oj_user 用户管理
@@ -38,10 +39,16 @@ python3 manage.py migrate
 ```
 
 ## Commands | 常用命令
+
+### 启动 celery 进程
+
 ```shell
 celery -A oj_backend worker -l info -P eventlet # windows
 celery -A oj_backend worker -l info #linux
 ```
+
+### 国际化
+
 ```shell
 # Translation
 python3 manage.py makemessages -l en --ignore=venv

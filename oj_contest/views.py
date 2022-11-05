@@ -48,6 +48,8 @@ class ContestViewSet(ModelViewSet):
     @action(detail=True, methods=['get'], url_path='ranking')
     def get_ranking(self, request, pk):
         contest = self.get_object()
+        if contest.problem_list_mode:
+            return Response({'detail': _('No ranking for problem list mode.')})
         if contest.start_time > timezone.now():
             return Response({'detail': _('Contest has not started.')})
         if not (self.request.user.is_staff
@@ -55,36 +57,33 @@ class ContestViewSet(ModelViewSet):
             data = cache.get(f'contest_ranking_{pk}')
             if data is not None:
                 return Response(data)
-        contest_problems = contest.problems.order_by('id')
-        users = contest.users.all()
-        res = {
-            'contest': ContestSerializer(contest, context={
-                'request': request
-            }).data,
-            'users': [],
-            'problems': {
-                i['id']: i['title']
-                for i in ProblemBriefSerializer(
-                    contest_problems,
-                    many=True,
-                ).data
-            },
+        contest_problems = {
+            i['id']: i['title']
+            for i in ProblemBriefSerializer(
+                contest.problems.order_by('id'),
+                many=True,
+            ).data
         }
+
+        res = {'users': [], 'time': timezone.now().isoformat()}
+
+        users = contest.users.all()
         for user in users:
             submissions = user.submissions.filter(
                 create_time__range=(contest.start_time, contest.end_time),
                 problem_id__in=contest.problems.all(),
-            )
+            ).order_by('create_time')
             item = {
-                **UserSerializer(user).data, 'problems': {},
-                'latest_submit': 0
+                **UserSerializer(user).data, 'latest_submit': 0,
+                'problems': []
             }
+            problems = {}
             for submission in submissions:
-                if item['problems'].get(
-                        submission.problem_id
-                ) is None or submission.score > item['problems'][
-                        submission.problem_id]['score']:
-                    item['problems'][submission.problem_id] = {
+                if problems.get(submission.problem_id
+                                ) is None or submission.score > problems[
+                                    submission.problem_id]['score']:
+                    problems[submission.problem_id] = {
+                        'name': contest_problems[submission.problem_id],
                         'status': submission.status,
                         'score': submission.score,
                         'time': submission.create_time.isoformat(),
@@ -94,20 +93,24 @@ class ContestViewSet(ModelViewSet):
                         item['latest_submit'],
                         submission.create_time.timestamp(),
                     )
-            item['score'] = sum(
-                [i['score'] for i in item['problems'].values()])
+            item['score'] = sum([i['score'] for i in problems.values()])
+            for id, problem in problems.items():
+                problem['id'] = id
+                item['problems'].append(problem)
             res['users'].append(item)
+
         res['users'].sort(key=cmp_to_key(
             lambda x, y: x['score'] > y['score'] if x['score'] != y[
                 'score'] else x['latest_submit'] < y['latest_submit']))
         for i in res['users']:
             i.pop('latest_submit')
-        res['time'] = timezone.now().isoformat()
+
         cache.set(
             f'contest_ranking_{pk}',
             res,
             60 if contest.end_time > timezone.now() else 86400,
         )
+
         return Response(res)
 
     @action(detail=True,

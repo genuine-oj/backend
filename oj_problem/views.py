@@ -13,6 +13,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelViewSet
@@ -56,7 +57,7 @@ class ProblemViewSet(ModelViewSet):
         return ProblemDetailSerializer
 
 
-class DataViewSet(GenericViewSet):
+class DataViewSet(GenericViewSet, RetrieveModelMixin):
     queryset = TestCase.objects.all()
     permission_classes = [Granted]
     lookup_field = 'problem__id'
@@ -67,28 +68,23 @@ class DataViewSet(GenericViewSet):
         else:
             return TestCaseUpdateSerializer
 
-    def retrieve(self, request, *args, **kwargs):
+    @action(methods=['get'], detail=True, url_path='file/(?P<file>.+)')
+    def fetch_file(self, request, file, *args, **kwargs):
         instance = self.get_object()
-        mode = request.query_params.get('mode')
-        if mode == 'fetch':
-            partly = request.query_params.get('partly') == 'true'
-            length = 255 if partly else -1
-            file = request.query_params.get('file')
-            test_case_file = settings.TEST_DATA_ROOT / str(
-                instance.test_case_id) / file
-            if not test_case_file.is_file():
-                raise NotFound(_('File not found.'))
-            response = HttpResponse(
-                partly_read(
-                    test_case_file,
-                    length,
-                    test_case_file.stat().st_size,
-                ))
-            response['Content-Type'] = 'text/plain'
-            return response
-        else:
-            serializer = self.get_serializer(instance)
-            return Response(serializer.data)
+        partly = request.query_params.get('partly') == 'true'
+        length = 255 if partly else -1
+        test_case_file = settings.TEST_DATA_ROOT / str(
+            instance.test_case_id) / file
+        if not test_case_file.is_file():
+            raise NotFound(_('File not found.'))
+        response = HttpResponse(
+            partly_read(
+                test_case_file,
+                length,
+                test_case_file.stat().st_size,
+            ))
+        response['Content-Type'] = 'text/plain'
+        return response
 
     @swagger_auto_schema(
         responses={

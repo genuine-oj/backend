@@ -31,7 +31,7 @@ class Problem(models.Model):
     create_time = models.DateTimeField(_('create time'), auto_now_add=True)
     update_time = models.DateTimeField(_('update time'), auto_now=True)
     submission_count = models.IntegerField(_('submission count'), default=0)
-    solved_count = models.IntegerField(_('solved count'), default=0)
+    accepted_count = models.IntegerField(_('solved count'), default=0)
 
     class Meta:
         verbose_name = _('problem')
@@ -84,7 +84,7 @@ class TestCase(models.Model):
         blank=True,
         default=SpjModeChoices.NULL
     )
-    subcheck_config = models.JSONField(_('subcheck config'), blank=True, default=dict)
+    subcheck_config = models.JSONField(_('subcheck config'), blank=True, default=list)
     use_spj = models.BooleanField(_('spj'), default=False)
     use_subcheck = models.BooleanField(_('subcheck'), default=False)
     allow_download = models.BooleanField(_('allow download case data'), default=True)
