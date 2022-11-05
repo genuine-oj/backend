@@ -7,6 +7,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import GenericAPIView
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.views import APIView
@@ -36,9 +37,15 @@ class UserViewSet(ReadOnlyModelViewSet):
             return UserSerializer
         return UserDetailSerializer
 
-    @action(detail=False, methods=['post'], url_path='change_password')
+    @action(detail=False,
+            methods=['post'],
+            permission_classes=[IsAuthenticated],
+            url_path='change_password')
     def change_password(self, request):
-        serializer = ChangePasswordSerializer(data=request.data)
+        serializer = ChangePasswordSerializer(
+            data=request.data,
+            context={'request': request},
+        )
         serializer.is_valid(raise_exception=True)
         user = request.user
         user.set_password(serializer.validated_data.get('new_password'))
