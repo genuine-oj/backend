@@ -24,5 +24,6 @@ def judge(task_id, case_id, test_case_config, subcheck_config, lang, code,
     ])
     if submission.status == StatusChoices.ACCEPTED:
         submission.problem.accepted_count += 1
+        submission.problem.save(update_fields=['accepted_count'])
         ProblemSolve.objects.get_or_create(user=submission.user,
                                            problem=submission.problem)
