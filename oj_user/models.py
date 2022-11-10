@@ -14,9 +14,8 @@ class UserManager(BaseUserManager):
         if not username:
             raise ValueError('The given username must be set')
         email = self.normalize_email(email)
-        global_user_model = apps.get_model(
-            self.model._meta.app_label, self.model._meta.object_name
-        )
+        global_user_model = apps.get_model(self.model._meta.app_label,
+                                           self.model._meta.object_name)
         username = global_user_model.normalize_username(username)
         user = self.model(username=username, email=email, **extra_fields)
         user.password = make_password(password)
@@ -29,7 +28,11 @@ class UserManager(BaseUserManager):
 
         return self._create_user(username, email, password, **extra_fields)
 
-    def create_superuser(self, username, email=None, password=None, **extra_fields):
+    def create_superuser(self,
+                         username,
+                         email=None,
+                         password=None,
+                         **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
@@ -57,6 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     real_name = models.CharField(_('real name'), max_length=20, blank=True)
     student_id = models.CharField(_('student id'), max_length=40, blank=True)
     email = models.EmailField(_('email address'), blank=True)
+    avatar = models.URLField(_('avatar'), blank=True, null=True, default=None)
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
@@ -82,6 +86,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Group(BaseGroup):
+
     class Meta:
         proxy = True
         verbose_name = _('group')

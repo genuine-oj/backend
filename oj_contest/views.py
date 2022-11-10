@@ -1,5 +1,3 @@
-from functools import cmp_to_key
-
 from django.core.cache import cache
 from django.db.models import Q
 from django.utils import timezone
@@ -7,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 from oj_backend.permissions import Granted, IsAuthenticatedAndReadOnly
 from oj_problem.serializers import ProblemBriefSerializer
-from oj_user.serializers import UserSerializer
+from oj_user.serializers import UserBriefSerializer
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -74,7 +72,7 @@ class ContestViewSet(ModelViewSet):
                 problem_id__in=contest.problems.all(),
             ).order_by('create_time')
             item = {
-                **UserSerializer(user).data, 'latest_submit': 0,
+                **UserBriefSerializer(user).data, 'latest_submit': 0,
                 'problems': []
             }
             problems = {}
@@ -99,9 +97,7 @@ class ContestViewSet(ModelViewSet):
                 item['problems'].append(problem)
             res['users'].append(item)
 
-        res['users'].sort(key=cmp_to_key(
-            lambda x, y: x['score'] > y['score'] if x['score'] != y[
-                'score'] else x['latest_submit'] < y['latest_submit']))
+        res['users'].sort(key=lambda x: (-x['score'], x['latest_submit']))
         for i in res['users']:
             i.pop('latest_submit')
 

@@ -1,7 +1,7 @@
 from oj_problem.models import Problem
 from oj_problem.serializers import ProblemBriefSerializer, ProblemSerializer
 from oj_user.models import User
-from oj_user.serializers import UserSerializer
+from oj_user.serializers import UserBriefSerializer
 from rest_framework import serializers
 
 from .models import Contest, ContestUser
@@ -40,7 +40,7 @@ class ProblemsField(serializers.Field):
 class UsersField(serializers.Field):
 
     def to_representation(self, value):
-        return UserSerializer(value, many=True).data
+        return UserBriefSerializer(value, many=True).data
 
     def to_internal_value(self, data):
         return [User.objects.get(id=i) for i in data]

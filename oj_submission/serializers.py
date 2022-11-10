@@ -4,7 +4,7 @@ import sys
 from .models import Submission
 from .tasks import judge
 from oj_problem.models import Problem
-from oj_user.serializers import UserSerializer
+from oj_user.serializers import UserBriefSerializer
 from oj_problem.serializers import ProblemBriefSerializer
 
 
@@ -18,7 +18,7 @@ class SizeField(serializers.ReadOnlyField):
 
 
 class SubmissionSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserBriefSerializer()
     problem = ProblemBriefSerializer()
     source_size = SizeField(source='source')
 
@@ -35,7 +35,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
 
 
 class SubmissionDetailSerializer(serializers.ModelSerializer):
-    user = UserSerializer(default=serializers.CurrentUserDefault())
+    user = UserBriefSerializer(default=serializers.CurrentUserDefault())
     problem = ProblemBriefSerializer(read_only=True)
     problem_id = serializers.IntegerField(write_only=True)
 

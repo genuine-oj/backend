@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Problem, TestCase, Tags
+from .models import Problem, TestCase, Tags, ProblemSolve
 
 
 class SampleSerializer(serializers.Field):
@@ -79,7 +79,15 @@ class ProblemBriefSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Problem
-        fields = ['id', 'title']
+        fields = ['id', 'title', 'difficulty']
+
+
+class ProblemSolveSerializer(serializers.ModelSerializer):
+    problem = ProblemBriefSerializer(read_only=True)
+
+    class Meta:
+        model = ProblemSolve
+        fields = ['problem', 'create_time']
 
 
 class TagsSerializer(serializers.ModelSerializer):

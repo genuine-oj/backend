@@ -56,6 +56,14 @@ class SubmissionViewSet(ReadOnlyModelViewSet, CreateModelMixin):
     @action(detail=True,
             methods=['get'],
             permission_classes=[IsAuthenticatedAndReadOnly],
+            url_path='status')
+    def get_status(self, request, pk=None):
+        submission = self.get_object()
+        return Response({'status': submission.status})
+
+    @action(detail=True,
+            methods=['get'],
+            permission_classes=[IsAuthenticatedAndReadOnly],
             name='Get test point detail',
             url_path=r'test-point/(?P<name>\w+)',
             url_name='Test Point Data')

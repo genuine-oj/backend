@@ -14,7 +14,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from .models import User
-from .serializers import LoginSerializer, UserDetailSerializer, UserSerializer, ChangePasswordSerializer
+from .serializers import LoginSerializer, UserDetailSerializer, UserBriefSerializer, UserSerializer, ChangePasswordSerializer
 
 
 class UserPagination(LimitOffsetPagination):
@@ -34,6 +34,8 @@ class UserViewSet(ReadOnlyModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'list':
+            return UserBriefSerializer
+        elif self.action == 'update':
             return UserSerializer
         return UserDetailSerializer
 
@@ -69,7 +71,7 @@ class LoginView(GenericAPIView):
         if not user.is_active:
             raise ValidationError(_('User is disabled.'))
         login(request, user)
-        serializer = UserDetailSerializer(instance=user)
+        serializer = UserSerializer(instance=user)
         return Response(serializer.data)
 
 
@@ -93,14 +95,21 @@ class RegisterView(GenericAPIView):
         password = serializer.validated_data.get('password')
         user = User.objects.create_user(username=username, password=password)
         login(request, user)
-        serializer = UserDetailSerializer(instance=user)
+        serializer = UserSerializer(instance=user)
         return Response(serializer.data)
 
 
 class InfoAPIView(GenericAPIView):
     permission_classes = []
-    serializer_class = UserDetailSerializer
+    serializer_class = UserSerializer
 
     def get(self, request, *args, **kwargs):
         serializer = self.get_serializer(instance=request.user)
+        return Response(serializer.data)
+
+    def put(self, request, *args, **kwargs):
+        serializer = self.get_serializer(instance=request.user,
+                                         data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data)
