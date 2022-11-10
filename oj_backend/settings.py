@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = open(BASE_DIR / 'secret.key', 'r').read()
 
-MODE = os.getenv('OJ_MODE', 'development').lower()
+MODE = os.getenv('OJ_MODE', 'DEVELOPMENT').upper()
 
 SQL_DATA = {
     i: os.getenv(f'OJ_SQL_{i}', j)
@@ -18,7 +18,7 @@ SQL_DATA = {
     ]
 }
 
-if MODE == 'production':
+if MODE == 'PRODUCTION':
     DEBUG = False
     ALLOWED_HOSTS = []
     DATABASES = {
@@ -27,7 +27,7 @@ if MODE == 'production':
             **SQL_DATA,
         },
     }
-elif MODE == 'test':
+elif MODE == 'TEST':
     DEBUG = True
     ALLOWED_HOSTS = ['*']
     DATABASES = {
@@ -45,6 +45,8 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
+ALLOW_REGISTER = os.getenv('OJ_ALLOW_REGISTER', 'TRUE').upper() == 'TRUE'
 
 VENDOR_APPS = [
     # 'channels',

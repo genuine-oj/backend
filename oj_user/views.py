@@ -1,7 +1,8 @@
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
-from oj_backend.permissions import IsAuthenticatedAndReadOnly
+from oj_backend.permissions import Granted, IsAuthenticatedAndReadOnly
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -14,7 +15,9 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from .models import User
-from .serializers import LoginSerializer, UserDetailSerializer, UserBriefSerializer, UserSerializer, ChangePasswordSerializer
+from .serializers import (ChangePasswordSerializer, LoginSerializer,
+                          UserBriefSerializer, UserDetailSerializer,
+                          UserSerializer)
 
 
 class UserPagination(LimitOffsetPagination):
@@ -23,7 +26,7 @@ class UserPagination(LimitOffsetPagination):
 
 
 class UserViewSet(ReadOnlyModelViewSet):
-    permission_classes = [IsAuthenticatedAndReadOnly]
+    permission_classes = [Granted | IsAuthenticatedAndReadOnly]
     lookup_value_regex = r'\d+'
     pagination_class = UserPagination
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
@@ -38,6 +41,15 @@ class UserViewSet(ReadOnlyModelViewSet):
         elif self.action == 'update':
             return UserSerializer
         return UserDetailSerializer
+
+    def update(self, request, *args, **kwargs):
+        user = self.get_object()
+        if request.data.get('password'):
+            user.set_password(request.data['password'])
+        serializer = UserSerializer(user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
     @action(detail=False,
             methods=['post'],
@@ -84,8 +96,7 @@ class LogoutView(APIView):
 
 
 class RegisterView(GenericAPIView):
-    authentication_classes = []
-    permission_classes = []
+    permission_classes = [] if settings.ALLOW_REGISTER else [Granted]
     serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
@@ -94,7 +105,8 @@ class RegisterView(GenericAPIView):
         username = serializer.validated_data.get('username')
         password = serializer.validated_data.get('password')
         user = User.objects.create_user(username=username, password=password)
-        login(request, user)
+        if not request.user.is_authenticated:
+            login(request, user)
         serializer = UserSerializer(instance=user)
         return Response(serializer.data)
 
