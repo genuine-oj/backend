@@ -62,9 +62,9 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'user', 'problem', 'problem_id', 'source', 'language',
             'status', 'score', 'execute_time', 'execute_memory', 'detail',
-            'log', 'create_time'
+            'log', 'create_time', 'allow_download'
         ]
         read_only_fields = [
             'status', 'score', 'execute_time', 'execute_memory', 'detail',
-            'log', 'create_time'
+            'log', 'create_time', 'allow_download'
         ]

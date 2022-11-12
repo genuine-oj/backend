@@ -10,7 +10,8 @@ def judge(task_id, case_id, test_case_config, subcheck_config, lang, code,
     submission = Submission.objects.get(id=task_id)
     judger = JudgeClient()
     submission.status = StatusChoices.JUDGING
-    submission.save(update_fields=['status'])
+    submission.allow_download = submission.problem.test_case.allow_download
+    submission.save(update_fields=['status', 'allow_download'])
     result = judger.judge(task_id, case_id, test_case_config, subcheck_config,
                           lang, code, limit)
     submission.status = ResultMapping[result['status']]

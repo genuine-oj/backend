@@ -34,9 +34,11 @@ class ContestViewSet(ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_staff:
-            return Contest.objects.all()
-        return Contest.objects.filter(
-            Q(is_hidden=False) | Q(users=self.request.user.id)).distinct()
+            queryset = Contest.objects.all()
+        else:
+            queryset = Contest.objects.filter(
+                Q(is_hidden=False) | Q(users=self.request.user.id)).distinct()
+        return queryset.order_by('-id')
 
     def get_serializer_class(self):
         if self.action == 'list':
