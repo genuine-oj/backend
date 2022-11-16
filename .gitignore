@@ -14,3 +14,4 @@ venv
 secret.key
 *.env
 uwsgi.ini
+static/
