@@ -20,7 +20,6 @@ SQL_DATA = {
 
 if MODE == 'PRODUCTION':
     DEBUG = False
-    ALLOWED_HOSTS = []
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -29,7 +28,6 @@ if MODE == 'PRODUCTION':
     }
 elif MODE == 'TEST':
     DEBUG = True
-    ALLOWED_HOSTS = ['*']
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -38,7 +36,6 @@ elif MODE == 'TEST':
     }
 else:
     DEBUG = True
-    ALLOWED_HOSTS = ['*']
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -47,6 +44,8 @@ else:
     }
 
 ALLOW_REGISTER = os.getenv('OJ_ALLOW_REGISTER', 'TRUE').upper() == 'TRUE'
+
+ALLOWED_HOSTS = ['*']
 
 VENDOR_APPS = [
     # 'channels',
