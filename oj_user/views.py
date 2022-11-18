@@ -33,7 +33,7 @@ class UserViewSet(ReadOnlyModelViewSet):
     search_fields = ['id', 'username']
     ordering_fields = ['id', 'username']
     filterset_fields = []
-    queryset = User.objects.all()
+    queryset = User.objects.order_by('id')
 
     def get_serializer_class(self):
         if self.action == 'list':

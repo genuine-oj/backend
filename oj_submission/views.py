@@ -9,7 +9,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from .models import Submission
+from .models import Submission, StatusChoices
 from .serializers import SubmissionDetailSerializer, SubmissionSerializer
 
 
@@ -69,18 +69,29 @@ class SubmissionViewSet(ReadOnlyModelViewSet, CreateModelMixin):
             url_name='Test Point Data')
     def test_point(self, request, name, *args, **kwargs):
         instance = self.get_object()
+
+        if not instance.allow_download:
+            return HttpResponse(
+                'CURRENT SUBMISSION IS NOT ALLOWED TO DOWNLOAD CASE DATA',
+                status=403)
+        elif instance.status <= StatusChoices.COMPILE_ERROR or instance.status == StatusChoices.SYSTEM_ERROR:
+            return HttpResponse(
+                'SUBMISSION IN CURRENT STATUS IS NOT ALLOWED TO DOWNLOAD CASE DATA',
+                status=403)
+
         mode = self.request.query_params.get('mode')
         ans_file = settings.TEST_DATA_ROOT / str(
             instance.problem.test_case.test_case_id) / f'{name}.ans'
         in_file = settings.TEST_DATA_ROOT / str(
             instance.problem.test_case.test_case_id) / f'{name}.in'
         out_file = settings.SUBMISSION_ROOT / str(instance.id) / f'{name}.out'
+
         if mode == 'fetch':
             length = -1
             file = self.request.query_params.get('file')
-            if file not in ['in', 'out', 'ans']:
+            file = {'in': in_file, 'out': out_file, 'ans': ans_file}.get(file)
+            if file is None:
                 return HttpResponse('FILE NOT FOUND', status=404)
-            file = {'in': in_file, 'out': out_file, 'ans': ans_file}[file]
             return StreamingHttpResponse(file_iterator(file))
         else:
             length = 255
