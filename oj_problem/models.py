@@ -96,7 +96,7 @@ class TestCase(models.Model):
 
 
 class Tags(models.Model):
-    name = models.CharField(_('tag name'), max_length=20, unique=True)
+    name = models.CharField(_('tag name'), max_length=50, unique=True)
 
     class Meta:
         verbose_name = _('tag')

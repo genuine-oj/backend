@@ -2,6 +2,7 @@ import hashlib
 from zipfile import ZipFile
 
 from django.conf import settings
+from django.core.cache import cache
 from django.http import HttpResponse, StreamingHttpResponse
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
@@ -176,11 +177,20 @@ class TagsViewSet(ReadOnlyModelViewSet):
     def create(self, request, *args, **kwargs):
         create = request.data.get('create')
         for i in create:
-            Tags.objects.create(name=i)
+            Tags.objects.get_or_create(name=i)
         update = request.data.get('update')
         for i in update:
             Tags.objects.filter(id=i['id']).update(name=i['name'])
         delete = request.data.get('delete')
         for i in delete:
             Tags.objects.filter(id=i).delete()
-        return Response(TagsSerializer(Tags.objects.all(), many=True).data)
+        data = TagsSerializer(Tags.objects.all(), many=True).data
+        cache.set('tags', data, 86400)
+        return Response(data)
+
+    def list(self, request, *args, **kwargs):
+        data = cache.get('tags')
+        if not data:
+            data = TagsSerializer(Tags.objects.all(), many=True).data
+            cache.set('tags', data, 86400)
+        return Response(data)
