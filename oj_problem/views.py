@@ -48,8 +48,10 @@ class ProblemViewSet(ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_staff:
-            return Problem.objects.all()
-        return Problem.objects.filter(is_hidden=False)
+            queryset = Problem.objects
+        else:
+            queryset = Problem.objects.filter(is_hidden=False)
+        return queryset.order_by('id')
 
     def get_serializer_class(self):
         if self.action == 'list':
