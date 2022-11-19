@@ -106,10 +106,20 @@ class TagsField(serializers.Field):
         return [Tags.objects.get(id=i) for i in data]
 
 
+class AllowSubmit(serializers.ReadOnlyField):
+
+    def to_internal_value(self, data):
+        pass
+
+    def to_representation(self, value):
+        return bool(len(value.test_case_config))
+
+
 class ProblemDetailSerializer(serializers.ModelSerializer):
     samples = SampleSerializer(source='*')
     solved = ProblemSolved(source='problem_solve')
     tags = TagsField()
+    allow_submit = AllowSubmit(source='test_case')
 
     class Meta:
         model = Problem

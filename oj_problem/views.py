@@ -1,27 +1,27 @@
 import hashlib
-import json
-from wsgiref.util import FileWrapper
 from zipfile import ZipFile
 
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, StreamingHttpResponse
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+from oj_backend.permissions import Granted, IsAuthenticatedAndReadOnly
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
-from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import (GenericViewSet, ModelViewSet,
+                                     ReadOnlyModelViewSet)
 
-from oj_backend.permissions import Granted, IsAuthenticatedAndReadOnly
-from .models import Problem, TestCase, Tags
-from .serializers import ProblemSerializer, ProblemDetailSerializer, \
-    TestCaseDetailSerializer, TestCaseUpdateSerializer, TagsSerializer
+from .models import Problem, Tags, TestCase
+from .serializers import (ProblemDetailSerializer, ProblemSerializer,
+                          TagsSerializer, TestCaseDetailSerializer,
+                          TestCaseUpdateSerializer)
 
 
 def partly_read(file, length, file_size):
@@ -30,6 +30,16 @@ def partly_read(file, length, file_size):
         if 0 <= length < file_size:
             content += '...'
     return content
+
+
+def file_iterator(file, chunk_size=512):
+    with open(file, 'rb') as f:
+        while True:
+            c = f.read(chunk_size)
+            if c:
+                yield c
+            else:
+                break
 
 
 class ProblemPagination(LimitOffsetPagination):
@@ -57,6 +67,38 @@ class ProblemViewSet(ModelViewSet):
         if self.action == 'list':
             return ProblemSerializer
         return ProblemDetailSerializer
+
+    @action(detail=True,
+            methods=['get', 'delete'],
+            url_path='file/(?P<file_name>.+)')
+    def problem_file_download(self, request, pk, file_name):
+        file = settings.PROBLEM_FILE_ROOT / str(pk) / file_name
+        if not file.is_file():
+            raise NotFound(_('File not found.'))
+        if request.method == 'DELETE':
+            file.unlink(missing_ok=True)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return StreamingHttpResponse(
+            file_iterator(file),
+            content_type='application/octet-stream',
+        )
+
+    @action(detail=True, methods=['post'], url_path='file')
+    def problem_file_upload(self, request, pk):
+        file = request.FILES.get('file')
+        if not file:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        path = settings.PROBLEM_FILE_ROOT / str(pk) / file.name
+        if path.is_file():
+            return Response(_('File already exists.'),
+                            status=status.HTTP_400_BAD_REQUEST)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(file.read())
+        return Response(
+            'success',
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class DataViewSet(GenericViewSet, RetrieveModelMixin):

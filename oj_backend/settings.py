@@ -187,8 +187,12 @@ CHANNEL_LAYERS = {
     }
 }
 
+PROBLEM_FILE_ROOT = Path(
+    os.getenv('OJ_PROBLEM_FILE_ROOT', BASE_DIR / 'problem_files'))
+
 JUDGE_SERVER = '127.0.0.1:8080'
-JUDGE_DATA_ROOT = BASE_DIR / 'judge_data'
+JUDGE_DATA_ROOT = Path(os.getenv('OJ_JUDGE_DATA_ROOT',
+                                 BASE_DIR / 'judge_data'))
 SUBMISSION_ROOT = JUDGE_DATA_ROOT / 'submission'
 TEST_DATA_ROOT = JUDGE_DATA_ROOT / 'test_data'
 SPJ_ROOT = JUDGE_DATA_ROOT / 'spj'
