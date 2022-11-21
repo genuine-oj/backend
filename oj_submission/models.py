@@ -36,7 +36,7 @@ class Submission(models.Model):
         related_name='submissions',
         on_delete=models.CASCADE,
     )
-    source = models.TextField(_('source code'), max_length=5000)
+    source = models.TextField(_('source code'), max_length=102400)
     language = models.CharField(
         _('language'),
         max_length=10,

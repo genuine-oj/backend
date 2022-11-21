@@ -24,13 +24,10 @@ class SubmissionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Submission
-        fields = [
+        fields = read_only_fields = [
             'id', 'user', 'problem', 'language', 'source_size', 'status',
-            'score', 'execute_time', 'execute_memory', 'create_time'
-        ]
-        read_only_fields = [
-            'source_size', 'status', 'score', 'execute_time', 'execute_memory',
-            'create_time'
+            'score', 'execute_time', 'execute_memory', 'create_time',
+            'is_hidden'
         ]
 
 
@@ -62,7 +59,7 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'user', 'problem', 'problem_id', 'source', 'language',
             'status', 'score', 'execute_time', 'execute_memory', 'detail',
-            'log', 'create_time', 'allow_download'
+            'log', 'create_time', 'allow_download', 'is_hidden'
         ]
         read_only_fields = [
             'status', 'score', 'execute_time', 'execute_memory', 'detail',

@@ -3,6 +3,7 @@ from zipfile import ZipFile
 
 from django.conf import settings
 from django.core.cache import cache
+from django.db.models import Q
 from django.http import HttpResponse, StreamingHttpResponse
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
@@ -58,10 +59,16 @@ class ProblemViewSet(ModelViewSet):
     filterset_fields = ['difficulty', 'tags__id']
 
     def get_queryset(self):
+        '''
+        .filter(
+                Q(is_hidden=False) | Q(users=self.request.user.id)).distinct()
+        '''
         if self.request.user.is_staff:
             queryset = Problem.objects
         else:
-            queryset = Problem.objects.filter(is_hidden=False)
+            queryset = Problem.objects.filter(
+                Q(is_hidden=False)
+                | Q(contests__contest__users=self.request.user.id)).distinct()
         return queryset.order_by('id')
 
     def get_serializer_class(self):

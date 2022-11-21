@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.db.models import Q
+from django.utils import timezone
 from django.http import HttpResponse, StreamingHttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from oj_backend.permissions import (Granted, IsAuthenticatedAndReadCreate,
@@ -11,6 +13,8 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from .models import Submission, StatusChoices
 from .serializers import SubmissionDetailSerializer, SubmissionSerializer
+from oj_contest.models import Contest
+from oj_problem.models import Problem
 
 
 class SubmissionPagination(LimitOffsetPagination):
@@ -43,9 +47,16 @@ class SubmissionViewSet(ReadOnlyModelViewSet, CreateModelMixin):
     filterset_fields = ['problem__id', 'user__username', 'language', 'status']
 
     def get_queryset(self):
-        queryset = Submission.objects.all()
-        if not self.request.user.is_staff:
-            queryset = queryset.filter(is_hidden=False)
+        if self.request.user.is_staff:
+            queryset = Submission.objects.all()
+        else:
+            progressing_contest = Contest.objects.filter(
+                Q(start_time__lte=timezone.now())
+                & Q(end_time__gte=timezone.now()))
+            queryset = Submission.objects.exclude(
+                problem__contests__contest__in=progressing_contest).filter(
+                    Q(is_hidden=False)
+                    | Q(user=self.request.user.id)).distinct()
         return queryset.order_by('-create_time')
 
     def get_serializer_class(self):
