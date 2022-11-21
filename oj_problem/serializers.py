@@ -112,14 +112,14 @@ class AllowSubmit(serializers.ReadOnlyField):
         pass
 
     def to_representation(self, value):
-        return bool(len(value.test_case_config))
+        return value
 
 
 class ProblemDetailSerializer(serializers.ModelSerializer):
     samples = SampleSerializer(source='*')
     solved = ProblemSolved(source='problem_solve')
     tags = TagsField()
-    allow_submit = AllowSubmit(source='test_case')
+    allow_submit = AllowSubmit()
 
     class Meta:
         model = Problem

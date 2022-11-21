@@ -14,6 +14,7 @@ class Contest(models.Model):
     end_time = models.DateTimeField(_('end time'), null=True, blank=True)
     is_hidden = models.BooleanField(_('hide'), default=False)
     allow_sign_up = models.BooleanField(_('allow sign up'), default=True)
+    allow_submit = models.BooleanField(_('allow submit'), default=True)
 
     problems = models.ManyToManyField(Problem, through='ContestProblem')
     users = models.ManyToManyField(User, through='ContestUser')

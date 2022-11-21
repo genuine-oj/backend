@@ -31,11 +31,20 @@ class Problem(models.Model):
     memory_limit = models.IntegerField(_('memory limit (MB)'),
                                        default=128)  # MB
     is_hidden = models.BooleanField(_('hide'), default=False)
+    _allow_submit = models.BooleanField(_('allow submit'), default=True)
     create_time = models.DateTimeField(_('create time'), auto_now_add=True)
     update_time = models.DateTimeField(_('update time'), auto_now=True)
     submission_count = models.IntegerField(_('submission count'), default=0)
     accepted_count = models.IntegerField(_('solved count'), default=0)
     files = models.JSONField(_('problem files'), default=list)
+
+    @property
+    def allow_submit(self):
+        return all([
+            self._allow_submit,
+            bool(len(self.test_case.test_case_config)),
+            not self.contests.filter(contest__allow_submit=False).exists()
+        ])
 
     class Meta:
         verbose_name = _('problem')

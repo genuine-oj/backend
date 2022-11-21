@@ -1,5 +1,5 @@
 from oj_problem.models import Problem
-from oj_problem.serializers import ProblemBriefSerializer, ProblemSerializer
+from oj_problem.serializers import ProblemSerializer
 from oj_user.models import User
 from oj_user.serializers import UserBriefSerializer
 from rest_framework import serializers
@@ -55,7 +55,7 @@ class ContestDetailSerializer(serializers.ModelSerializer):
         model = Contest
         fields = [
             'id', 'title', 'start_time', 'end_time', 'joined', 'description',
-            'problem_list_mode', 'is_hidden', 'allow_sign_up', 'problems',
-            'users'
+            'problem_list_mode', 'is_hidden', 'allow_sign_up', 'allow_submit',
+            'problems', 'users'
         ]
         read_only_fields = ['id']

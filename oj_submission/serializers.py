@@ -39,6 +39,8 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         problem_id = validated_data.pop('problem_id')
         problem = Problem.objects.get(id=problem_id)
+        if not problem.allow_submit:
+            raise serializers.ValidationError('Problem not allow submit')
         validated_data['problem'] = problem
         submission = Submission.objects.create(**validated_data)
         judge.delay(
