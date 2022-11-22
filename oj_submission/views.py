@@ -55,9 +55,9 @@ class SubmissionViewSet(ReadOnlyModelViewSet, CreateModelMixin):
                 & Q(end_time__gte=timezone.now()))
             queryset = Submission.objects.exclude(
                 problem__contests__contest__in=progressing_contest).filter(
-                    Q(is_hidden=False)
-                    | Q(user=self.request.user.id)).distinct()
-        return queryset.order_by('-create_time')
+                    Q(is_hidden=False)) | Submission.objects.filter(
+                        Q(user=self.request.user))
+        return queryset.distinct().order_by('-create_time')
 
     def get_serializer_class(self):
         if self.action == 'list':

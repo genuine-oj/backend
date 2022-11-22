@@ -119,7 +119,7 @@ class ProblemDetailSerializer(serializers.ModelSerializer):
     samples = SampleSerializer(source='*')
     solved = ProblemSolved(source='problem_solve')
     tags = TagsField()
-    allow_submit = AllowSubmit()
+    allow_submit = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Problem

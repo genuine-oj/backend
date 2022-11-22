@@ -1,3 +1,4 @@
+from django.utils import timezone
 from oj_problem.models import Problem
 from oj_problem.serializers import ProblemSerializer
 from oj_user.models import User
@@ -31,10 +32,19 @@ class ContestSerializer(serializers.ModelSerializer):
 class ProblemsField(serializers.Field):
 
     def to_representation(self, value):
-        return ProblemSerializer(value, many=True, context=self.context).data
+        request = self.context.get('request')
+        if not request.user.is_staff and value.start_time > timezone.now():
+            return []
+        elif not request.user.is_staff and not value.users.filter(
+                id=request.user.id).exists():
+            queryset = value.problems.filter(is_hidden=False)
+        else:
+            queryset = value.problems.all()
+        return ProblemSerializer(queryset, many=True,
+                                 context=self.context).data
 
     def to_internal_value(self, data):
-        return [Problem.objects.get(id=i) for i in data]
+        return {'problems': [Problem.objects.get(id=i) for i in data]}
 
 
 class UsersField(serializers.Field):
@@ -48,7 +58,7 @@ class UsersField(serializers.Field):
 
 class ContestDetailSerializer(serializers.ModelSerializer):
     joined = ContestJoined(source='users')
-    problems = ProblemsField(required=False)
+    problems = ProblemsField(required=False, source='*')
     users = UsersField(required=False)
 
     class Meta:

@@ -1,6 +1,7 @@
 from uuid import uuid1
 
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from oj_user.models import User
 
@@ -43,7 +44,9 @@ class Problem(models.Model):
         return all([
             self._allow_submit,
             bool(len(self.test_case.test_case_config)),
-            not self.contests.filter(contest__allow_submit=False).exists()
+            not self.contests.filter(contest__start_time__gte=timezone.now(),
+                                     contest__end_time__lte=timezone.now(),
+                                     contest__allow_submit=False).exists()
         ])
 
     class Meta:
