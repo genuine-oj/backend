@@ -1,33 +1,22 @@
+from django.utils.translation import gettext_lazy as _
+from oj_problem.models import Problem
+from oj_problem.serializers import ProblemBriefSerializer
+from oj_user.serializers import UserBriefSerializer
 from rest_framework import serializers
-import sys
 
 from .models import Submission
 from .tasks import judge
-from oj_problem.models import Problem
-from oj_user.serializers import UserBriefSerializer
-from oj_problem.serializers import ProblemBriefSerializer
-
-
-class SizeField(serializers.ReadOnlyField):
-
-    def to_internal_value(self, data):
-        pass
-
-    def to_representation(self, value):
-        return sys.getsizeof(str(value))
 
 
 class SubmissionSerializer(serializers.ModelSerializer):
     user = UserBriefSerializer()
     problem = ProblemBriefSerializer()
-    source_size = SizeField(source='source')
 
     class Meta:
         model = Submission
         fields = read_only_fields = [
-            'id', 'user', 'problem', 'language', 'source_size', 'status',
-            'score', 'execute_time', 'execute_memory', 'create_time',
-            'is_hidden'
+            'id', 'user', 'problem', 'language', 'status', 'score',
+            'execute_time', 'execute_memory', 'create_time', 'is_hidden'
         ]
 
 
@@ -39,8 +28,10 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         problem_id = validated_data.pop('problem_id')
         problem = Problem.objects.get(id=problem_id)
-        if not problem.allow_submit:
-            raise serializers.ValidationError('Problem not allow submit')
+        if not problem.allow_submit and not self.context[
+                'request'].user.is_staff:
+            raise serializers.ValidationError(
+                _('Problem submit is not allowed'))
         validated_data['problem'] = problem
         submission = Submission.objects.create(**validated_data)
         judge.delay(

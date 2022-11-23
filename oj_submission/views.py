@@ -6,6 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from oj_backend.permissions import (Granted, IsAuthenticatedAndReadCreate,
                                     IsAuthenticatedAndReadOnly)
 from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
@@ -43,8 +44,11 @@ def file_iterator(file, chunk_size=512):
 class SubmissionViewSet(ReadOnlyModelViewSet, CreateModelMixin):
     permission_classes = [Granted | IsAuthenticatedAndReadCreate]
     pagination_class = SubmissionPagination
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ['problem__id', 'user__username', 'language', 'status']
+    ordering_fields = [
+        'create_time', 'execute_time', 'execute_memory', 'score'
+    ]
 
     def get_queryset(self):
         if self.request.user.is_staff:

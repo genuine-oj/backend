@@ -46,8 +46,13 @@ class UserSubmissionField(serializers.ListField):
         pass
 
     def to_representation(self, value):
-        submissions = value.order_by('-id')[:10]
-        return _SubmissionSerializer(submissions, many=True).data
+        user = self.context['request'].user
+        if not value.exists():
+            return []
+        elif not user.is_staff and not value.first().user == user:
+            value = value.filter(is_hidden=False)
+        return _SubmissionSerializer(value.order_by('-id')[:10],
+                                     many=True).data
 
 
 class AcceptedCountField(serializers.ReadOnlyField):
