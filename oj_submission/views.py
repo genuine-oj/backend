@@ -15,7 +15,6 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 from .models import Submission, StatusChoices
 from .serializers import SubmissionDetailSerializer, SubmissionSerializer
 from oj_contest.models import Contest
-from oj_problem.models import Problem
 
 
 class SubmissionPagination(LimitOffsetPagination):
@@ -80,7 +79,7 @@ class SubmissionViewSet(ReadOnlyModelViewSet, CreateModelMixin):
             methods=['get'],
             permission_classes=[IsAuthenticatedAndReadOnly],
             name='Get test point detail',
-            url_path=r'test-point/(?P<name>\w+)',
+            url_path=r'test-point/(?P<name>.+)',
             url_name='Test Point Data')
     def test_point(self, request, name, *args, **kwargs):
         instance = self.get_object()
