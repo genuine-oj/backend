@@ -57,21 +57,16 @@ class ContestViewSet(ModelViewSet):
             data = cache.get(f'contest_ranking_{pk}')
             if data is not None:
                 return Response(data)
-        contest_problems = {
-            i['id']: i['title']
-            for i in ProblemBriefSerializer(
-                contest.problems.order_by('id'),
-                many=True,
-            ).data
-        }
 
         res = {'users': [], 'time': timezone.now().isoformat()}
 
         users = contest.users.all()
+        problems = contest.problems.all()
+        problem_ids = [i.id for i in problems]
         for user in users:
             submissions = user.submissions.filter(
                 create_time__range=(contest.start_time, contest.end_time),
-                problem_id__in=contest.problems.all(),
+                problem_id__in=problems,
             ).order_by('create_time')
             item = {
                 **UserBriefSerializer(user).data, 'latest_submit': 0,
@@ -82,8 +77,9 @@ class ContestViewSet(ModelViewSet):
                 if problems.get(submission.problem_id
                                 ) is None or submission.score > problems[
                                     submission.problem_id]['score']:
-                    problems[submission.problem_id] = {
-                        'name': contest_problems[submission.problem_id],
+                    problems[submission.problem.id] = {
+                        'id': submission.problem.id,
+                        'title': submission.problem.title,
                         'status': submission.status,
                         'score': submission.score,
                         'time': submission.create_time.isoformat(),
@@ -94,9 +90,9 @@ class ContestViewSet(ModelViewSet):
                         submission.create_time.timestamp(),
                     )
             item['score'] = sum([i['score'] for i in problems.values()])
-            for id, problem in problems.items():
-                problem['id'] = id
+            for problem in problems.values():
                 item['problems'].append(problem)
+            item['problems'].sort(key=lambda x: problem_ids.index(x['id']))
             res['users'].append(item)
 
         res['users'].sort(key=lambda x: (-x['score'], x['latest_submit']))
@@ -106,7 +102,7 @@ class ContestViewSet(ModelViewSet):
         cache.set(
             f'contest_ranking_{pk}',
             res,
-            60 if contest.end_time > timezone.now() else 86400,
+            60 if contest.end_time > timezone.now() else None,
         )
 
         return Response(res)

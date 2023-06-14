@@ -190,13 +190,13 @@ class TagsViewSet(ReadOnlyModelViewSet):
         delete = request.data.get('delete')
         for i in delete:
             Tags.objects.filter(id=i).delete()
-        data = TagsSerializer(Tags.objects.all(), many=True).data
-        cache.set('tags', data, 86400)
+        data = TagsSerializer(Tags.objects.order_by('id'), many=True).data
+        cache.set('tags', data, None)
         return Response(data)
 
     def list(self, request, *args, **kwargs):
         data = cache.get('tags')
         if not data:
-            data = TagsSerializer(Tags.objects.all(), many=True).data
-            cache.set('tags', data, 86400)
+            data = TagsSerializer(Tags.objects.order_by('id'), many=True).data
+            cache.set('tags', data, None)
         return Response(data)
