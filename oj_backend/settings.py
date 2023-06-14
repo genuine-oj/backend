@@ -18,7 +18,7 @@ SQL_DATA = {
     ]
 }
 
-REDIS_URI = f'redis://{os.getenv('OJ_REDIS_HOST', '127.0.0.1')}:{os.getenv('OJ_REDIS_PORT', 6379)}'
+REDIS_URI = f"redis://{os.getenv('OJ_REDIS_HOST', '127.0.0.1')}:{os.getenv('OJ_REDIS_PORT', 6379)}"
 
 if MODE == 'PRODUCTION':
     DEBUG = False
@@ -177,7 +177,7 @@ SWAGGER_SETTINGS = {
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_BROKER_URL = f'amqp://{os.getenv('OJ_MQ_HOST', '127.0.0.1')}:{os.getenv('OJ_MQ_PORT', 5672)}'
+CELERY_BROKER_URL = f"amqp://{os.getenv('OJ_MQ_HOST', '127.0.0.1')}:{os.getenv('OJ_MQ_PORT', 5672)}"
 CELERY_RESULT_BACKEND = f'{REDIS_URI}/1'
 
 CHANNEL_LAYERS = {
@@ -192,7 +192,7 @@ CHANNEL_LAYERS = {
 PROBLEM_FILE_ROOT = Path(
     os.getenv('OJ_PROBLEM_FILE_ROOT', BASE_DIR / 'problem_files'))
 
-JUDGE_SERVER = f'{os.getenv('OJ_JUDGE_HOST', '127.0.0.1')}:{os.getenv('OJ_JUDGE_PORT', 8080)}'
+JUDGE_SERVER = f"{os.getenv('OJ_JUDGE_HOST', '127.0.0.1')}:{os.getenv('OJ_JUDGE_PORT', 8080)}"
 JUDGE_DATA_ROOT = Path(os.getenv('OJ_JUDGE_DATA_ROOT',
                                  BASE_DIR / 'judge_data'))
 SUBMISSION_ROOT = JUDGE_DATA_ROOT / 'submission'
