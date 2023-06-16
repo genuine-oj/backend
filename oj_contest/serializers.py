@@ -35,11 +35,7 @@ class ProblemsField(serializers.Field):
         request = self.context.get('request')
         if not request.user.is_staff and value.start_time > timezone.now():
             return []
-        elif not request.user.is_staff and not value.users.filter(
-                id=request.user.id).exists():
-            queryset = value.problems.filter(is_hidden=False)
-        else:
-            queryset = value.problems.all()
+        queryset = value.problems.all()
         return ProblemSerializer(queryset, many=True,
                                  context=self.context).data
 
@@ -65,7 +61,7 @@ class ContestDetailSerializer(serializers.ModelSerializer):
         model = Contest
         fields = [
             'id', 'title', 'start_time', 'end_time', 'joined', 'description',
-            'problem_list_mode', 'is_hidden', 'allow_sign_up', 'allow_submit',
-            'problems', 'users'
+            'problem_list_mode', 'is_hidden', 'allow_sign_up',
+            'hide_problems_before_end', 'problems', 'users'
         ]
         read_only_fields = ['id']

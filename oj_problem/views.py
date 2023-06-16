@@ -1,4 +1,5 @@
 import hashlib
+from typing import Any
 from zipfile import ZipFile
 
 from django.conf import settings
@@ -25,6 +26,7 @@ from .models import Problem, Tags, TestCase
 from .serializers import (ProblemDetailSerializer, ProblemSerializer,
                           TagsSerializer, TestCaseDetailSerializer,
                           TestCaseUpdateSerializer)
+from oj_contest.models import Contest
 
 
 def partly_read(file, length, file_size):
@@ -63,11 +65,15 @@ class ProblemViewSet(ModelViewSet):
         if self.request.user.is_staff:
             queryset = Problem.objects
         else:
-            queryset = Problem.objects.filter(
-                Q(is_hidden=False)
-                | Q(contests__contest__users=self.request.user.id,
-                    contests__contest__start_time__gte=timezone.now())
-            ).distinct()
+            contests_require_hide_problem = Contest.objects.filter(
+                end_time__gt=timezone.now(), hide_problems_before_end=True)
+            queryset = Problem.objects.exclude(
+                Q(_is_hidden=True)
+                | Q(contests__contest__in=contests_require_hide_problem)
+            ) | Problem.objects.filter(
+                Q(contests__contest__users=self.request.user.id,
+                  contests__contest__start_time__lte=timezone.now()))
+            queryset = queryset.distinct()
         return queryset.order_by('id')
 
     def get_serializer_class(self):

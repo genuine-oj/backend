@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from oj_problem.models import Problem
 from oj_problem.serializers import ProblemBriefSerializer
@@ -27,10 +28,19 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
     problem_id = serializers.IntegerField(write_only=True)
 
     def create(self, validated_data):
+        user = self.context['request'].user
         problem_id = validated_data.pop('problem_id')
         problem = Problem.objects.get(id=problem_id)
-        if not problem.allow_submit and not self.context[
-                'request'].user.is_staff:
+        if not all([
+                problem.allow_submit,
+                not problem.contests.filter(
+                    contest__users=user.id,
+                    contest__start_time__lte=timezone.now()).exists(
+                    )  # 用户参与了包含这道题的已经开始的比赛
+                or not problem.contests.filter(
+                    contest__end_time__gt=timezone.now()).exists(),
+        ]) and not (user.is_staff
+                    and bool(len(problem.test_case.test_case_config))):
             raise serializers.ValidationError(
                 _('Problem submit is not allowed'))
         validated_data['problem'] = problem

@@ -31,8 +31,9 @@ class Problem(models.Model):
     time_limit = models.IntegerField(_('time limit (ms)'), default=1000)  # ms
     memory_limit = models.IntegerField(_('memory limit (MB)'),
                                        default=128)  # MB
-    is_hidden = models.BooleanField(_('hide'), default=False)
-    hide_submissions = models.BooleanField(_('hide submissions'), default=False)
+    _is_hidden = models.BooleanField(_('hide'), default=False)
+    hide_submissions = models.BooleanField(_('hide submissions'),
+                                           default=False)
     _allow_submit = models.BooleanField(_('allow submit'), default=True)
     create_time = models.DateTimeField(_('create time'), auto_now_add=True)
     update_time = models.DateTimeField(_('update time'), auto_now=True)
@@ -41,13 +42,20 @@ class Problem(models.Model):
     files = models.JSONField(_('problem files'), default=list)
 
     @property
+    def is_hidden(self):
+        return any([
+            self._is_hidden,
+            self.contests.filter(
+                contest__end_time__gt=timezone.now(),
+                contest__hide_problems_before_end=True,
+            ).exists(),
+        ])
+
+    @property
     def allow_submit(self):
         return all([
             self._allow_submit,
             bool(len(self.test_case.test_case_config)),
-            not self.contests.filter(contest__start_time__gte=timezone.now(),
-                                     contest__end_time__lte=timezone.now(),
-                                     contest__allow_submit=False).exists()
         ])
 
     class Meta:

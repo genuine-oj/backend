@@ -8,7 +8,6 @@ from .models import Problem, TestCase, Tags, ProblemSolve
 class ProblemAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'tag_list', 'is_hidden', 'create_time', 'update_time']
     search_fields = ['id', 'title']
-    list_filter = ['is_hidden']
     filter_horizontal = ['tags']
 
     def get_queryset(self, request):

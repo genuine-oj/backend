@@ -51,18 +51,17 @@ class SubmissionViewSet(ReadOnlyModelViewSet, CreateModelMixin):
 
     def get_queryset(self):
         if self.request.user.is_staff:
-            queryset = Submission.objects.all()
+            queryset = Submission.objects
         else:
-            progressing_contest = Contest.objects.filter(
-                Q(start_time__lte=timezone.now())
-                & Q(end_time__gte=timezone.now()))
+            unfinished_contest = Contest.objects.filter(
+                end_time__gt=timezone.now())
             queryset = Submission.objects.exclude(
-                Q(problem__contests__contest__in=progressing_contest)
-                | Q(problem__is_hidden=True)
-                | Q(problem__hide_submissions=True)).filter(
-                    Q(is_hidden=False)) | Submission.objects.filter(
-                        Q(user=self.request.user))
-        return queryset.distinct().order_by('-create_time')
+                Q(_is_hidden=True) | Q(problem___is_hidden=True)
+                | Q(problem__hide_submissions=True)
+                | Q(problem__contests__contest__in=unfinished_contest)
+            ) | Submission.objects.filter(Q(user=self.request.user))
+            queryset = queryset.distinct()
+        return queryset.order_by('-id')
 
     def get_serializer_class(self):
         if self.action == 'list':

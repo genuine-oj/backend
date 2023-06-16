@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from oj_problem.models import Problem
@@ -58,8 +59,17 @@ class Submission(models.Model):
         blank=True,
     )
     create_time = models.DateTimeField(_('create time'), auto_now_add=True)
-    is_hidden = models.BooleanField(_('hidden'), default=False)
+    _is_hidden = models.BooleanField(_('hidden'), default=False)
     allow_download = models.BooleanField(_('allow download'), default=True)
+
+    @property
+    def is_hidden(self):
+        return any([
+            self._is_hidden,
+            self.problem.is_hidden,
+            self.problem.hide_submissions,
+            self.problem.contests.filter(contest__end_time__gt=timezone.now()).exists(),
+        ])
 
     class Meta:
         verbose_name = _('submission')
