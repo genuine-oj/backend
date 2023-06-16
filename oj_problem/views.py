@@ -151,11 +151,11 @@ class DataViewSet(GenericViewSet, RetrieveModelMixin):
         serializer = self.get_serializer(instance=instance, data=request.data)
         serializer.is_valid(raise_exception=True)
         delete_cases = serializer.validated_data.get('delete_cases')
-        # if delete_cases:
-        #     for case in delete_cases:
-        #         (data_dir / f'{case}.in').unlink(missing_ok=True)
-        #         (data_dir / f'{case}.ans').unlink(missing_ok=True)
-        #         (data_dir / f'{case}.md5').unlink(missing_ok=True)
+        if delete_cases:
+            for case in delete_cases:
+                (data_dir / f'{case}.in').unlink(missing_ok=True)
+                (data_dir / f'{case}.ans').unlink(missing_ok=True)
+                (data_dir / f'{case}.md5').unlink(missing_ok=True)
         test_cases_file = serializer.validated_data.get('test_cases')
         if test_cases_file and test_cases_file.size > 0:
             test_cases = ZipFile(test_cases_file, 'r')

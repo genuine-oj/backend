@@ -3,7 +3,7 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = open(BASE_DIR / 'secret.key', 'r').read()
+SECRET_KEY = (BASE_DIR / 'secret.key').read_text()
 
 MODE = os.getenv('OJ_MODE', 'DEVELOPMENT').upper()
 
@@ -46,6 +46,8 @@ else:
     }
 
 ALLOW_REGISTER = os.getenv('OJ_ALLOW_REGISTER', 'TRUE').upper() == 'TRUE'
+FORCE_HIDE_SUBMISSION = os.getenv('OJ_FORCE_HIDE_SUBMISSION',
+                                  '').upper() == 'TRUE'
 
 ALLOWED_HOSTS = ['*']
 

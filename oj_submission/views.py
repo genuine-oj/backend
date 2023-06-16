@@ -57,7 +57,9 @@ class SubmissionViewSet(ReadOnlyModelViewSet, CreateModelMixin):
                 Q(start_time__lte=timezone.now())
                 & Q(end_time__gte=timezone.now()))
             queryset = Submission.objects.exclude(
-                problem__contests__contest__in=progressing_contest).filter(
+                Q(problem__contests__contest__in=progressing_contest)
+                | Q(problem__is_hidden=True)
+                | Q(problem__hide_submissions=True)).filter(
                     Q(is_hidden=False)) | Submission.objects.filter(
                         Q(user=self.request.user))
         return queryset.distinct().order_by('-create_time')

@@ -32,6 +32,7 @@ class Problem(models.Model):
     memory_limit = models.IntegerField(_('memory limit (MB)'),
                                        default=128)  # MB
     is_hidden = models.BooleanField(_('hide'), default=False)
+    hide_submissions = models.BooleanField(_('hide submissions'), default=False)
     _allow_submit = models.BooleanField(_('allow submit'), default=True)
     create_time = models.DateTimeField(_('create time'), auto_now_add=True)
     update_time = models.DateTimeField(_('update time'), auto_now=True)

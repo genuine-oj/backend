@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from oj_problem.models import Problem
 from oj_problem.serializers import ProblemBriefSerializer
@@ -33,6 +34,8 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 _('Problem submit is not allowed'))
         validated_data['problem'] = problem
+        if settings.FORCE_HIDE_SUBMISSION:
+            validated_data['is_hidden'] = True
         submission = Submission.objects.create(**validated_data)
         judge.delay(
             submission.id, submission.problem.test_case.test_case_id,

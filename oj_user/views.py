@@ -65,7 +65,7 @@ class UserViewSet(ReadOnlyModelViewSet):
         user.set_password(serializer.validated_data.get('new_password'))
         user.save()
         return Response(status=HTTP_204_NO_CONTENT)
-    
+
     @action(detail=False, methods=['get'], url_path='ranking')
     def get_ranking(self, request):
         ...
