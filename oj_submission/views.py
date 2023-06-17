@@ -53,12 +53,12 @@ class SubmissionViewSet(ReadOnlyModelViewSet, CreateModelMixin):
         if self.request.user.is_staff:
             queryset = Submission.objects
         else:
-            unfinished_contest = Contest.objects.filter(
-                end_time__gt=timezone.now())
+            processing_contest = Contest.objects.filter(
+                start_time__lt=timezone.now(), end_time__gt=timezone.now())
             queryset = Submission.objects.exclude(
                 Q(_is_hidden=True) | Q(problem___is_hidden=True)
                 | Q(problem__hide_submissions=True)
-                | Q(problem__contests__contest__in=unfinished_contest)
+                | Q(problem__contests__contest__in=processing_contest)
             ) | Submission.objects.filter(Q(user=self.request.user))
             queryset = queryset.distinct()
         return queryset.order_by('-id')

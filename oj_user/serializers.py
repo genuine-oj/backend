@@ -1,10 +1,13 @@
+from django.db.models import Q
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from .models import User
-from oj_submission.models import StatusChoices
-from oj_submission.models import Submission
-from oj_problem.serializers import ProblemSolveSerializer, ProblemBriefSerializer
+from oj_contest.models import Contest
+from oj_problem.serializers import (ProblemBriefSerializer,
+                                    ProblemSolveSerializer)
+from oj_submission.models import StatusChoices, Submission
 
 
 class UserBriefSerializer(serializers.ModelSerializer):
@@ -50,7 +53,13 @@ class UserSubmissionField(serializers.ListField):
         if not value.exists():
             return []
         elif not user.is_staff and not value.first().user == user:
-            value = value.filter(is_hidden=False)
+            processing_contest = Contest.objects.filter(
+                start_time__lt=timezone.now(), end_time__gt=timezone.now())
+            value = value.exclude(
+                Q(_is_hidden=True) | Q(problem___is_hidden=True)
+                | Q(problem__hide_submissions=True)
+                | Q(problem__contests__contest__in=processing_contest)
+            ).distinct()
         return _SubmissionSerializer(value.order_by('-id')[:10],
                                      many=True).data
 
