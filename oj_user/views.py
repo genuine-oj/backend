@@ -6,11 +6,11 @@ from oj_backend.permissions import Granted, IsAuthenticatedAndReadOnly
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, DestroyAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_204_NO_CONTENT
+from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED
 from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
@@ -25,7 +25,7 @@ class UserPagination(LimitOffsetPagination):
     max_limit = 200
 
 
-class UserViewSet(ReadOnlyModelViewSet):
+class UserViewSet(ReadOnlyModelViewSet, DestroyAPIView):
     permission_classes = [Granted | IsAuthenticatedAndReadOnly]
     lookup_value_regex = r'\d+'
     pagination_class = UserPagination
@@ -46,6 +46,11 @@ class UserViewSet(ReadOnlyModelViewSet):
         user = self.get_object()
         if request.data.get('password'):
             user.set_password(request.data['password'])
+        if request.data.get('is_staff') == True:
+            user.is_staff = user.is_superuser = True
+        else:
+            user.is_staff = user.is_superuser = False
+        user.save()
         serializer = UserSerializer(user, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -124,6 +129,8 @@ class InfoAPIView(GenericAPIView):
         return Response(serializer.data)
 
     def put(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response(status=HTTP_401_UNAUTHORIZED)
         serializer = self.get_serializer(instance=request.user,
                                          data=request.data)
         serializer.is_valid(raise_exception=True)
