@@ -17,3 +17,4 @@ uwsgi.ini
 static/
 problem_files/*
 !problem_files/.gitkeep
+/settings.json

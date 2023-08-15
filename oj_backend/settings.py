@@ -5,6 +5,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = (BASE_DIR / 'secret.key').read_text()
 
+SITE_SETTINGS = BASE_DIR / 'settings.json'
+SITE_SETTINGS_EXAMPLE = BASE_DIR / 'settings.json.example'
+
 MODE = os.getenv('OJ_MODE', 'DEVELOPMENT').upper()
 
 SQL_DATA = {

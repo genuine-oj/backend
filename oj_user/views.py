@@ -1,14 +1,19 @@
+import json
+import shutil
+import time
+
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
+from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
-from oj_backend.permissions import Granted, IsAuthenticatedAndReadOnly
+from oj_backend.permissions import Granted, IsAuthenticatedAndReadOnly, ReadOnly
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import GenericAPIView, DestroyAPIView
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED
 from rest_framework.views import APIView
@@ -18,6 +23,34 @@ from .models import User
 from .serializers import (ChangePasswordSerializer, LoginSerializer,
                           UserBriefSerializer, UserDetailSerializer,
                           UserSerializer)
+
+
+def deep_update(a: dict, b: dict):
+    flag = False
+    for i, j in b.items():
+        if type(j) == dict:
+            if i not in a:
+                a[i] = {}
+                flag = True
+            flag = deep_update(a[i], j) or flag
+        elif i not in a:
+            a[i] = j
+            flag = True
+    return flag
+
+
+# def deep_eq(a: dict, b: dict) -> bool:
+#     for i, j in b.items():
+#         if type(j) == dict:
+#             if i not in a:
+#                 return False
+#             elif not deep_eq(a[i], j):
+#                 return False
+#         elif i not in a:
+#             return False
+#         elif a[i] != j:
+#             return False
+#     return True
 
 
 class UserPagination(LimitOffsetPagination):
@@ -136,3 +169,45 @@ class InfoAPIView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+
+class SiteSettingsView(GenericAPIView):
+    permission_classes = [ReadOnly | IsAdminUser]
+
+    def get(self, request, *args, **kwargs):
+        data = cache.get('site_settings')
+        if data is not None:
+            return Response(data)
+        data_example = json.loads(
+            settings.SITE_SETTINGS_EXAMPLE.read_text(encoding='utf-8'))
+        if not settings.SITE_SETTINGS.exists():
+            data = data_example
+            data['update_time'] = int(time.time() * 1000)
+            settings.SITE_SETTINGS.write_text(json.dumps(data,
+                                                         indent=4,
+                                                         ensure_ascii=False),
+                                              encoding='utf-8')
+        else:
+            if deep_update(data, data_example):
+                data['update_time'] = int(time.time() * 1000)
+                settings.SITE_SETTINGS.write_text(json.dumps(
+                    data, indent=4, ensure_ascii=False),
+                                                  encoding='utf-8')
+        cache.set('site_settings', data, 86400)
+        return Response(data)
+
+    def put(self, request, *args, **kwargs):
+        data = json.loads(settings.SITE_SETTINGS.read_text(encoding='utf-8'))
+        data.update(request.data)
+        data['update_time'] = int(time.time() * 1000)
+        settings.SITE_SETTINGS.write_text(json.dumps(data,
+                                                     indent=4,
+                                                     ensure_ascii=False),
+                                          encoding='utf-8')
+        cache.set('site_settings', data, 86400)
+        return Response(data)
+
+    def delete(self, request, *args, **kwargs):
+        settings.SITE_SETTINGS.unlink(missing_ok=True)
+        cache.delete('site_settings')
+        return Response(status=HTTP_204_NO_CONTENT)

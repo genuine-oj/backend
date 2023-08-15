@@ -1,0 +1,21 @@
+{
+    "name": "GENUINE-OJ",
+    "title": "GENUINE-OJ",
+    "footer": {
+        "useFooter": true,
+        "icp": "ICP-XXXXXXXXXX"
+    },
+    "allowRegister": true,
+    "displaySettings": {
+        "markdownTheme": "vuepress",
+        "sentenceApi": "yxzl",
+        "theme": "dark"
+    },
+    "languages": {
+        "c": "C",
+        "cpp": "C++",
+        "python3": "Python 3"
+    },
+    "defaultSubmitLanguage": "python3",
+    "forceHideSubmissions": false
+}

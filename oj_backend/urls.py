@@ -5,11 +5,14 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework.permissions import AllowAny
 
+from oj_user.views import SiteSettingsView
+
 urlpatterns = [
     path('problem/', include('oj_problem.urls')),
     path('submission/', include('oj_submission.urls')),
     path('contest/', include('oj_contest.urls')),
     path('user/', include('oj_user.urls')),
+    path('site_settings/', SiteSettingsView.as_view()),
     path('admin/', admin.site.urls),
 ]
 

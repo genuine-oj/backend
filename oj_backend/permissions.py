@@ -36,8 +36,8 @@ class Granted(BasePermission):
         if hasattr(view, 'get_queryset'):
             queryset = view.get_queryset()
             assert queryset is not None, (
-                '{}.get_queryset() returned None'.format(view.__class__.__name__)
-            )
+                '{}.get_queryset() returned None'.format(
+                    view.__class__.__name__))
             return queryset
         return view.queryset
 
@@ -56,19 +56,21 @@ class Granted(BasePermission):
 
 
 class IsAuthenticatedAndReadOnly(BasePermission):
+
     def has_permission(self, request, view):
-        return bool(
-            request.user and
-            request.user.is_authenticated and
-            request.method in SAFE_METHODS
-        )
+        return bool(request.user and request.user.is_authenticated
+                    and request.method in SAFE_METHODS)
 
 
 class IsAuthenticatedAndReadCreate(BasePermission):
+
     def has_permission(self, request, view):
         return bool(
-            request.user and
-            request.user.is_authenticated and
-            (request.method in SAFE_METHODS or
-             request.method == 'POST')
-        )
+            request.user and request.user.is_authenticated
+            and (request.method in SAFE_METHODS or request.method == 'POST'))
+
+
+class ReadOnly(BasePermission):
+
+    def has_permission(self, request, view):
+        return bool(request.method in SAFE_METHODS)
