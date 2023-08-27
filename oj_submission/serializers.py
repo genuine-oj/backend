@@ -44,7 +44,7 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 _('Problem submit is not allowed'))
         validated_data['problem'] = problem
-        if settings.FORCE_HIDE_SUBMISSION:
+        if settings.FORCE_HIDE_SUBMISSIONS:
             validated_data['is_hidden'] = True
         submission = Submission.objects.create(**validated_data)
         judge.delay(
