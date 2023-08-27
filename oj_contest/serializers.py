@@ -29,6 +29,13 @@ class ContestSerializer(serializers.ModelSerializer):
         ]
 
 
+class ContestBriefSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Contest
+        fields = ['id', 'title', 'problem_list_mode', 'is_hidden']
+
+
 class ProblemsField(serializers.Field):
 
     def to_representation(self, value):
