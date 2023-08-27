@@ -48,16 +48,6 @@ else:
         }
     }
 
-if SITE_SETTINGS.exists():
-    import json
-    with open(SITE_SETTINGS, 'r') as f:
-        data = json.load(f)
-    ALLOW_REGISTER = data.get('allow_register', True)
-    FORCE_HIDE_SUBMISSIONS = data.get('force_hide_submissions', False)
-else:
-    ALLOW_REGISTER = True
-    FORCE_HIDE_SUBMISSIONS = False
-
 ALLOWED_HOSTS = ['*']
 
 VENDOR_APPS = [

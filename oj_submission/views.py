@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.cache import cache
 from django.db.models import Q
 from django.utils import timezone
 from django.http import HttpResponse, StreamingHttpResponse
@@ -50,8 +51,11 @@ class SubmissionViewSet(ReadOnlyModelViewSet, CreateModelMixin):
     ]
 
     def get_queryset(self):
+        site_settings = cache.get('site_settings')
         if self.request.user.is_staff:
             queryset = Submission.objects
+        elif site_settings.get('forceHideSubmissions'):
+            queryset = Submission.objects.filter(user=self.request.user)
         else:
             processing_contest = Contest.objects.filter(
                 start_time__lt=timezone.now(), end_time__gt=timezone.now())

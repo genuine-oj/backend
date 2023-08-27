@@ -1,5 +1,4 @@
 import json
-import shutil
 import time
 
 from django.conf import settings
@@ -9,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 from oj_backend.permissions import Granted, IsAuthenticatedAndReadOnly, ReadOnly
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import GenericAPIView, DestroyAPIView
 from rest_framework.pagination import LimitOffsetPagination
@@ -138,10 +137,14 @@ class LogoutView(APIView):
 
 
 class RegisterView(GenericAPIView):
-    permission_classes = [] if settings.ALLOW_REGISTER else [Granted]
+    permission_classes = []
     serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            site_settings = cache.get('site_settings')
+            if not site_settings.get('allowRegister'):
+                raise PermissionDenied(_('Register is not allowed.'))
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         username = serializer.validated_data.get('username')
