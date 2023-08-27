@@ -1,4 +1,5 @@
 {
+    "noDeepUpdate": ["languages"],
     "name": "GENUINE-OJ",
     "title": "GENUINE-OJ",
     "footer": {

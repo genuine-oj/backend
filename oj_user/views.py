@@ -24,14 +24,15 @@ from .serializers import (ChangePasswordSerializer, LoginSerializer,
                           UserSerializer)
 
 
-def deep_update(a: dict, b: dict):
+def deep_update(a: dict, b: dict, skip: list = []):
     flag = False
     for i, j in b.items():
         if type(j) == dict:
             if i not in a:
                 a[i] = {}
                 flag = True
-            flag = deep_update(a[i], j) or flag
+            if i not in skip:
+                flag = deep_update(a[i], j) or flag
         elif i not in a:
             a[i] = j
             flag = True
@@ -191,7 +192,9 @@ class SiteSettingsView(GenericAPIView):
                                                          ensure_ascii=False),
                                               encoding='utf-8')
         else:
-            if deep_update(data, data_example):
+            data = json.loads(
+                settings.SITE_SETTINGS.read_text(encoding='utf-8'))
+            if deep_update(data, data_example, data_example['noDeepUpdate']):
                 data['update_time'] = int(time.time() * 1000)
                 settings.SITE_SETTINGS.write_text(json.dumps(
                     data, indent=4, ensure_ascii=False),
@@ -200,7 +203,10 @@ class SiteSettingsView(GenericAPIView):
         return Response(data)
 
     def put(self, request, *args, **kwargs):
-        data = json.loads(settings.SITE_SETTINGS.read_text(encoding='utf-8'))
+        data = cache.get('site_settings')
+        if data is None:
+            data = json.loads(
+                settings.SITE_SETTINGS.read_text(encoding='utf-8'))
         data.update(request.data)
         data['update_time'] = int(time.time() * 1000)
         settings.SITE_SETTINGS.write_text(json.dumps(data,
