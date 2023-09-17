@@ -18,5 +18,6 @@
         "python3": "Python 3"
     },
     "defaultSubmitLanguage": "python3",
-    "forceHideSubmissions": false
+    "forceHideSubmissions": false,
+    "enableDiscussion": true
 }

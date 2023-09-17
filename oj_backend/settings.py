@@ -68,6 +68,7 @@ LOCAL_APPS = [
     'oj_problem.apps.ProblemConfig',
     'oj_submission.apps.SubmissionConfig',
     'oj_contest.apps.ContestConfig',
+    'oj_discussion.apps.DiscussionConfig',
 ]
 
 INSTALLED_APPS = VENDOR_APPS + LOCAL_APPS

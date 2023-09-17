@@ -66,9 +66,7 @@ class Submission(models.Model):
     def is_hidden(self):
         return any([
             self._is_hidden,
-            self.problem.is_hidden,
             self.problem.hide_submissions,
-            self.problem.contests.filter(contest__end_time__gt=timezone.now()).exists(),
         ])
 
     class Meta:

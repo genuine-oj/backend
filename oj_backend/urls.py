@@ -11,6 +11,7 @@ urlpatterns = [
     path('problem/', include('oj_problem.urls')),
     path('submission/', include('oj_submission.urls')),
     path('contest/', include('oj_contest.urls')),
+    path('discussion/', include('oj_discussion.urls')),
     path('user/', include('oj_user.urls')),
     path('site_settings/', SiteSettingsView.as_view()),
     path('admin/', admin.site.urls),
@@ -24,6 +25,10 @@ if settings.DEBUG:
             license=openapi.License(name='GPLv3 License'),
         ),
         public=True,
-        permission_classes=(AllowAny,),
+        permission_classes=(AllowAny, ),
     )
-    urlpatterns += [path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-ui')]
+    urlpatterns += [
+        path('swagger/',
+             schema_view.with_ui('swagger', cache_timeout=0),
+             name='swagger-ui')
+    ]

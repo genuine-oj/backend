@@ -68,7 +68,7 @@ class ContestDetailSerializer(serializers.ModelSerializer):
         model = Contest
         fields = [
             'id', 'title', 'start_time', 'end_time', 'joined', 'description',
-            'problem_list_mode', 'is_hidden', 'allow_sign_up',
-            'hide_problems_before_end', 'problems', 'users'
+            'problem_list_mode', 'is_hidden', 'allow_sign_up', 'problems',
+            'users'
         ]
         read_only_fields = ['id']

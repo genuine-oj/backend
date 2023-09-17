@@ -1,5 +1,4 @@
 import hashlib
-from typing import Any
 from zipfile import ZipFile
 
 from django.conf import settings
@@ -65,14 +64,7 @@ class ProblemViewSet(ModelViewSet):
         if self.request.user.is_staff:
             queryset = Problem.objects
         else:
-            contests_require_hide_problem = Contest.objects.filter(
-                end_time__gt=timezone.now(), hide_problems_before_end=True)
-            queryset = Problem.objects.exclude(
-                Q(_is_hidden=True)
-                | Q(contests__contest__in=contests_require_hide_problem)
-            ) | Problem.objects.filter(
-                Q(contests__contest__users=self.request.user.id,
-                  contests__contest__start_time__lte=timezone.now()))
+            queryset = Problem.objects.exclude(Q(_is_hidden=True))
             queryset = queryset.distinct()
         return queryset.order_by('id')
 

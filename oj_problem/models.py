@@ -33,8 +33,10 @@ class Problem(models.Model):
     memory_limit = models.IntegerField(_('memory limit (MB)'),
                                        default=128)  # MB
     _is_hidden = models.BooleanField(_('hide'), default=False)
-    hide_submissions = models.BooleanField(_('hide submissions'),
-                                           default=False)
+    _hide_submissions = models.BooleanField(_('hide submissions'),
+                                            default=False)
+    _hide_discussions = models.BooleanField(_('hide discussions'),
+                                            default=False)
     _allow_submit = models.BooleanField(_('allow submit'), default=True)
     create_time = models.DateTimeField(_('create time'), auto_now_add=True)
     update_time = models.DateTimeField(_('update time'), auto_now=True)
@@ -46,9 +48,27 @@ class Problem(models.Model):
     def is_hidden(self):
         return any([
             self._is_hidden,
+        ])
+
+    @property
+    def hide_submissions(self):
+        return any([
+            self.is_hidden,
+            self._hide_submissions,
             self.contests.filter(
+                contest__start_time__lt=timezone.now(),
                 contest__end_time__gt=timezone.now(),
-                contest__hide_problems_before_end=True,
+            ).exists(),
+        ])
+
+    @property
+    def hide_discussions(self):
+        return any([
+            self.is_hidden,
+            self._hide_discussions,
+            self.contests.filter(
+                contest__start_time__lt=timezone.now(),
+                contest__end_time__gt=timezone.now(),
             ).exists(),
         ])
 

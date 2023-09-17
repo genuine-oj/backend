@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from oj_user.models import User
@@ -14,13 +15,17 @@ class Contest(models.Model):
     end_time = models.DateTimeField(_('end time'), null=True, blank=True)
     is_hidden = models.BooleanField(_('hide'), default=False)
     allow_sign_up = models.BooleanField(_('allow sign up'), default=True)
-    hide_problems_before_end = models.BooleanField(
-        _('hide problems before end'),
-        default=False,
-    )
 
     problems = models.ManyToManyField(Problem, through='ContestProblem')
     users = models.ManyToManyField(User, through='ContestUser')
+
+    @property
+    def hide_discussions(self):
+        return any([
+            self.is_hidden,
+            self.start_time < timezone.now()
+            and self.end_time > timezone.now(),
+        ])
 
     class Meta:
         verbose_name = _('contest')
