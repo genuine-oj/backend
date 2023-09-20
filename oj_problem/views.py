@@ -64,7 +64,13 @@ class ProblemViewSet(ModelViewSet):
         if self.request.user.is_staff:
             queryset = Problem.objects
         else:
-            queryset = Problem.objects.exclude(Q(_is_hidden=True))
+            processing_contest = Contest.objects.filter(
+                start_time__lt=timezone.now(),
+                end_time__gt=timezone.now()).filter(
+                    contests__contest__users=self.request.user.id)
+            queryset = Problem.objects.exclude(
+                Q(_is_hidden=True)) | Problem.objects.filter(
+                    Q(_is_hidden=True) & Q(contest__in=processing_contest))
             queryset = queryset.distinct()
         return queryset.order_by('id')
 
