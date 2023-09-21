@@ -46,10 +46,11 @@ class DiscussionViewSet(ReadOnlyModelViewSet):
         else:
             processing_contest = Contest.objects.filter(
                 start_time__lt=timezone.now(), end_time__gt=timezone.now())
-            queryset = Discussion.objects.exclude(Q(_is_hidden=True))
+            queryset = Discussion.objects
+            # queryset = queryset.exclude(Q(_is_hidden=True))
             queryset = queryset.exclude(
                 Q(related_problem___is_hidden=True)
-                | Q(related_problem__hide_discussions=True)
+                | Q(related_problem___hide_discussions=True)
                 | Q(related_problem__contests__contest__in=processing_contest))
             queryset = queryset.exclude(
                 Q(related_contest__is_hidden=True)
