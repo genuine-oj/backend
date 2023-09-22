@@ -21,6 +21,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import (GenericViewSet, ModelViewSet,
                                      ReadOnlyModelViewSet)
 
+from .filters import ProblemFilter
 from .models import Problem, Tags, TestCase
 from .serializers import (ProblemDetailSerializer, ProblemSerializer,
                           TagsSerializer, TestCaseDetailSerializer,
@@ -58,7 +59,8 @@ class ProblemViewSet(ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
     search_fields = ['id', 'title']
     ordering_fields = ['id', 'title']
-    filterset_fields = ['difficulty', 'tags__id']
+    # filterset_fields = ['difficulty', 'tags__id__in']
+    filterset_class = ProblemFilter
 
     def get_queryset(self):
         if self.request.user.is_staff:

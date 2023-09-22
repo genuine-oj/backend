@@ -120,6 +120,8 @@ class ProblemDetailSerializer(serializers.ModelSerializer):
     solved = ProblemSolved(source='problem_solve')
     tags = TagsField()
     allow_submit = serializers.BooleanField(read_only=True)
+    hide_submissions = serializers.BooleanField(read_only=True)
+    hide_discussions = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Problem
