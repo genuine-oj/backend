@@ -150,6 +150,8 @@ class RegisterView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         username = serializer.validated_data.get('username')
         password = serializer.validated_data.get('password')
+        if User.objects.filter(username=username).exists():
+            raise ValidationError(_('Username already exists.'))
         user = User.objects.create_user(username=username, password=password)
         if not request.user.is_authenticated:
             login(request, user)

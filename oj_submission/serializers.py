@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from oj_problem.models import Problem
 from oj_problem.serializers import ProblemBriefSerializer
+from oj_problem.views import get_problem_queryset
 from oj_user.serializers import UserBriefSerializer
 from rest_framework import serializers
 
@@ -31,22 +32,18 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         problem_id = validated_data.pop('problem_id')
         problem = Problem.objects.get(id=problem_id)
-        if not all([
-                problem.allow_submit,
-                not problem.contests.filter(
-                    contest__users=user.id,
-                    contest__start_time__lte=timezone.now()).exists(
-                    )  # 用户参与了包含这道题的已经开始的比赛
-                or not problem.contests.filter(
-                    contest__end_time__gt=timezone.now()).exists(),
-        ]) and not (user.is_staff
-                    and bool(len(problem.test_case.test_case_config))):
+        if not any([
+                user.is_staff
+                and bool(len(problem.test_case.test_case_config)),
+                get_problem_queryset(self.context['request']).filter(
+                    id=problem_id).exists() and problem.allow_submit
+        ]):
             raise serializers.ValidationError(
                 _('Problem submit is not allowed'))
         validated_data['problem'] = problem
-        # site_settings = cache.get('site_settings')
-        # if site_settings and site_settings.get('forceHideSubmissions'):
-        #     validated_data['is_hidden'] = True
+        site_settings = cache.get('site_settings')
+        if site_settings and site_settings.get('forceHideSubmissions'):
+            validated_data['is_hidden'] = True
         submission = Submission.objects.create(**validated_data)
         judge.delay(
             submission.id, submission.problem.test_case.test_case_id,

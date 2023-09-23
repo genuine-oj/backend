@@ -47,6 +47,20 @@ def file_iterator(file, chunk_size=512):
                 break
 
 
+def get_problem_queryset(request):
+    if request.user.is_staff:
+        queryset = Problem.objects
+    else:
+        processing_contest = Contest.objects.filter(
+            start_time__lt=timezone.now(),
+            end_time__gt=timezone.now()).filter(users=request.user.id)
+        queryset = Problem.objects.exclude(
+            Q(_is_hidden=True)) | Problem.objects.filter(
+                Q(_is_hidden=True) & Q(contest__in=processing_contest))
+        queryset = queryset.distinct()
+    return queryset
+
+
 class ProblemPagination(LimitOffsetPagination):
     default_limit = 50
     max_limit = 200
@@ -59,20 +73,10 @@ class ProblemViewSet(ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
     search_fields = ['id', 'title']
     ordering_fields = ['id', 'title']
-    # filterset_fields = ['difficulty', 'tags__id__in']
     filterset_class = ProblemFilter
 
     def get_queryset(self):
-        if self.request.user.is_staff:
-            queryset = Problem.objects
-        else:
-            processing_contest = Contest.objects.filter(
-                start_time__lt=timezone.now(),
-                end_time__gt=timezone.now()).filter(users=self.request.user.id)
-            queryset = Problem.objects.exclude(
-                Q(_is_hidden=True)) | Problem.objects.filter(
-                    Q(_is_hidden=True) & Q(contest__in=processing_contest))
-            queryset = queryset.distinct()
+        queryset = get_problem_queryset(self.request)
         return queryset.order_by('id')
 
     def get_serializer_class(self):

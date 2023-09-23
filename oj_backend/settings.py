@@ -31,6 +31,15 @@ if MODE == 'PRODUCTION':
             **SQL_DATA,
         },
     }
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': f'{REDIS_URI}/0',
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient'
+            }
+        }
+    }
 elif MODE == 'TEST':
     DEBUG = True
     DATABASES = {
@@ -39,12 +48,26 @@ elif MODE == 'TEST':
             **SQL_DATA,
         },
     }
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': f'{REDIS_URI}/0',
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient'
+            }
+        }
+    }
 else:
     DEBUG = True
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         }
     }
 
@@ -104,16 +127,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'oj_backend.wsgi.application'
 # ASGI_APPLICATION = 'oj_backend.asgi.application'
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': f'{REDIS_URI}/0',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient'
-        }
-    }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
