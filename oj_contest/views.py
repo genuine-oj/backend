@@ -66,7 +66,7 @@ class ContestViewSet(ModelViewSet):
         for user in users:
             submissions = user.submissions.filter(
                 create_time__range=(contest.start_time, contest.end_time),
-                problem_id__in=problems,
+                problem_id__in=problem_ids,
             ).order_by('create_time')
             item = {
                 **UserBriefSerializer(user).data, 'latest_submit': 0,
