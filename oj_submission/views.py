@@ -1,11 +1,13 @@
 from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Q
-from django.utils import timezone
 from django.http import HttpResponse, StreamingHttpResponse
+from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
-from oj_backend.permissions import (Granted, IsAuthenticatedAndReadCreate,
+from oj_backend.permissions import (Captcha, Granted,
+                                    IsAuthenticatedAndReadCreate,
                                     IsAuthenticatedAndReadOnly)
+from oj_contest.models import Contest
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.mixins import CreateModelMixin
@@ -13,9 +15,8 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from .models import Submission, StatusChoices
+from .models import StatusChoices, Submission
 from .serializers import SubmissionDetailSerializer, SubmissionSerializer
-from oj_contest.models import Contest
 
 
 class SubmissionPagination(LimitOffsetPagination):
@@ -42,13 +43,14 @@ def file_iterator(file, chunk_size=512):
 
 
 class SubmissionViewSet(ReadOnlyModelViewSet, CreateModelMixin):
-    permission_classes = [Granted | IsAuthenticatedAndReadCreate]
+    permission_classes = [Granted | IsAuthenticatedAndReadCreate, Captcha]
     pagination_class = SubmissionPagination
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ['problem__id', 'user__username', 'language', 'status']
     ordering_fields = [
         'create_time', 'execute_time', 'execute_memory', 'score'
     ]
+    scene = 'submission'
 
     def get_queryset(self):
         site_settings = cache.get('site_settings')

@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
-from oj_backend.permissions import Granted, IsAuthenticatedAndReadOnly, ReadOnly
+from oj_backend.permissions import Granted, IsAuthenticatedAndReadOnly, ReadOnly, Captcha
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -111,8 +111,9 @@ class UserViewSet(ReadOnlyModelViewSet, DestroyAPIView):
 
 class LoginView(GenericAPIView):
     authentication_classes = []
-    permission_classes = []
+    permission_classes = [Captcha]
     serializer_class = LoginSerializer
+    scene = 'login'
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -138,8 +139,10 @@ class LogoutView(APIView):
 
 
 class RegisterView(GenericAPIView):
-    permission_classes = []
+    authentication_classes = []
+    permission_classes = [Captcha]
     serializer_class = LoginSerializer
+    scene = 'register'
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_staff:
@@ -181,8 +184,22 @@ class SiteSettingsView(GenericAPIView):
     permission_classes = [ReadOnly | IsAdminUser]
 
     def get(self, request, *args, **kwargs):
+
+        def wash(data):
+            not_for_client = data.get('notForClient', [])
+            not_for_client = [i.split('.') for i in not_for_client]
+            for i in not_for_client:
+                t = data
+                for j in i[:-1]:
+                    t = t[j]
+                t.pop(i[-1])
+            return data
+
+        user = request.user
         data = cache.get('site_settings')
         if data is not None:
+            if not user.is_staff:
+                data = wash(data)
             return Response(data)
         data_example = json.loads(
             settings.SITE_SETTINGS_EXAMPLE.read_text(encoding='utf-8'))
@@ -202,6 +219,8 @@ class SiteSettingsView(GenericAPIView):
                     data, indent=4, ensure_ascii=False),
                                                   encoding='utf-8')
         cache.set('site_settings', data, 86400)
+        if not user.is_staff:
+            data = wash(data)
         return Response(data)
 
     def put(self, request, *args, **kwargs):

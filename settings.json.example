@@ -1,5 +1,6 @@
 {
     "noDeepUpdate": ["languages"],
+    "notForClient": ["captcha.serverKey"],
     "name": "GENUINE-OJ",
     "title": "GENUINE-OJ",
     "footer": {
@@ -16,6 +17,14 @@
         "c": "C",
         "cpp": "C++",
         "python3": "Python 3"
+    },
+    "captcha": {
+        "enabled": false,
+        "scenes": [],
+        "type": "recaptcha-v3",
+        "clientKey": "",
+        "serverKey": "",
+        "backendUrl": ""
     },
     "defaultSubmitLanguage": "python3",
     "forceHideSubmissions": false,

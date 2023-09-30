@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from oj_backend.permissions import (Granted, IsAuthenticatedAndReadCreate,
-                                    IsAuthenticatedAndReadOnly)
+                                    Captcha)
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
@@ -27,7 +27,7 @@ class ReplyPagination(PageNumberPagination):
 
 
 class DiscussionViewSet(ReadOnlyModelViewSet):
-    permission_classes = [Granted | IsAuthenticatedAndReadCreate]
+    permission_classes = [Granted | IsAuthenticatedAndReadCreate, Captcha]
     pagination_class = DiscussionPagination
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
     search_fields = ['id', 'title']
@@ -36,6 +36,7 @@ class DiscussionViewSet(ReadOnlyModelViewSet):
         'author__username'
     ]
     ordering_fields = ['create_time', 'update_time']
+    scene = 'discussion'
 
     def get_queryset(self):
         site_settings = cache.get('site_settings')
