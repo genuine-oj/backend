@@ -237,6 +237,10 @@ class SiteSettingsView(GenericAPIView):
         cache.set('site_settings', data, 86400)
         return Response(data)
 
+    def patch(self, request, *args, **kwargs):
+        cache.delete('site_settings')
+        return Response(status=HTTP_204_NO_CONTENT)
+
     def delete(self, request, *args, **kwargs):
         settings.SITE_SETTINGS.unlink(missing_ok=True)
         cache.delete('site_settings')
