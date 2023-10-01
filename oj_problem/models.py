@@ -118,16 +118,19 @@ class TestCase(models.Model):
     test_case_config = models.JSONField(_('test case config'),
                                         blank=True,
                                         default=list)
+    use_spj = models.BooleanField(_('spj'), default=False)
     spj_id = models.UUIDField(_('spj id'), default=uuid1)
     spj_mode = models.CharField(_('spj mode'),
                                 max_length=20,
                                 choices=SpjModeChoices.choices,
                                 blank=True,
                                 default=SpjModeChoices.NULL)
+    spj_source = models.TextField(_('spj_source'),
+                                        blank=True,
+                                        default='')
     subcheck_config = models.JSONField(_('subcheck config'),
                                        blank=True,
                                        default=list)
-    use_spj = models.BooleanField(_('spj'), default=False)
     use_subcheck = models.BooleanField(_('subcheck'), default=False)
     allow_download = models.BooleanField(_('allow download case data'),
                                          default=True)

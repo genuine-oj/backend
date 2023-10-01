@@ -179,6 +179,13 @@ class DataViewSet(GenericViewSet, RetrieveModelMixin):
                     file_hash = hashlib.md5(file_data).hexdigest()
                     (data_dir / f'{file_name}.md5').write_text(
                         file_hash, encoding='utf-8')
+        use_spj = serializer.validated_data.get('use_spj')
+        if use_spj:
+            spj_source = serializer.validated_data.get('spj_source')
+            spj_dir = settings.SPJ_ROOT / str(instance.spj_id)
+            spj_dir.mkdir(exist_ok=True)
+            (spj_dir / 'checker').unlink(missing_ok=True)
+            (spj_dir / 'checker.cpp').write_text(spj_source, encoding='utf-8')
         serializer.save()
         serializer = TestCaseDetailSerializer(serializer.data)
         return Response(serializer.data)

@@ -43,10 +43,12 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
         validated_data['problem'] = problem
         site_settings = cache.get('site_settings')
         if site_settings and site_settings.get('forceHideSubmissions'):
-            validated_data['is_hidden'] = True
+            validated_data['_is_hidden'] = True
         submission = Submission.objects.create(**validated_data)
         judge.delay(
             submission.id, submission.problem.test_case.test_case_id,
+            submission.problem.test_case.spj_id
+            if submission.problem.test_case.use_spj else None,
             submission.problem.test_case.test_case_config,
             submission.problem.test_case.subcheck_config
             if submission.problem.test_case.use_subcheck else None,
@@ -63,9 +65,9 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'user', 'problem', 'problem_id', 'source', 'language',
             'status', 'score', 'execute_time', 'execute_memory', 'detail',
-            'log', 'create_time', 'allow_download', 'is_hidden'
+            'log', 'create_time', 'allow_download', 'is_hidden', '_is_hidden'
         ]
         read_only_fields = [
             'status', 'score', 'execute_time', 'execute_memory', 'detail',
-            'log', 'create_time', 'allow_download'
+            'log', 'create_time', 'allow_download', 'is_hidden', '_is_hidden'
         ]

@@ -51,11 +51,12 @@ class JudgeClient(object):
             }
         return data
 
-    def judge(self, task_id, case_id, test_case_config, subcheck_config, lang,
-              code, limit):
+    def judge(self, task_id, case_id, spj_id, test_case_config,
+              subcheck_config, lang, code, limit):
         task_data = {
             'task_id': str(task_id),
             'case_id': str(case_id),
+            'spj_id': spj_id and str(spj_id),
             'test_case_config': test_case_config,
             'subcheck_config': subcheck_config,
             'lang': lang,

@@ -95,7 +95,7 @@ class SubmissionViewSet(ReadOnlyModelViewSet, CreateModelMixin):
             return HttpResponse(
                 'CURRENT SUBMISSION IS NOT ALLOWED TO DOWNLOAD CASE DATA',
                 status=403)
-        elif instance.status <= StatusChoices.COMPILE_ERROR or instance.status == StatusChoices.SYSTEM_ERROR:
+        elif instance.status <= StatusChoices.COMPILE_ERROR:
             return HttpResponse(
                 'SUBMISSION IN CURRENT STATUS IS NOT ALLOWED TO DOWNLOAD CASE DATA',
                 status=403)

@@ -35,8 +35,8 @@ class TestCaseDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestCase
         fields = [
-            'test_case_config', 'spj_mode', 'subcheck_config', 'use_spj',
-            'use_subcheck', 'allow_download'
+            'test_case_config', 'spj_source', 'spj_mode', 'subcheck_config',
+            'use_spj', 'use_subcheck', 'allow_download'
         ]
 
 
