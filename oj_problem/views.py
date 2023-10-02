@@ -48,7 +48,7 @@ def file_iterator(file, chunk_size=512):
 
 
 def get_problem_queryset(request):
-    if request.user.is_staff:
+    if 'problem' in request.user.permissions:
         queryset = Problem.objects
     else:
         processing_contest = Contest.objects.filter(
@@ -68,6 +68,7 @@ class ProblemPagination(LimitOffsetPagination):
 
 class ProblemViewSet(ModelViewSet):
     permission_classes = [Granted | IsAuthenticatedAndReadOnly]
+    permission = 'problem'
     lookup_value_regex = r'\d+'
     pagination_class = ProblemPagination
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
@@ -120,6 +121,7 @@ class ProblemViewSet(ModelViewSet):
 class DataViewSet(GenericViewSet, RetrieveModelMixin):
     queryset = TestCase.objects.all()
     permission_classes = [Granted]
+    permission = 'problem'
     lookup_field = 'problem__id'
 
     def get_serializer_class(self):
@@ -194,6 +196,7 @@ class DataViewSet(GenericViewSet, RetrieveModelMixin):
 class TagsViewSet(ReadOnlyModelViewSet):
     queryset = Tags.objects.all()
     permission_classes = [Granted | IsAuthenticatedAndReadOnly]
+    permission = 'problem'
     serializer_class = TagsSerializer
 
     def create(self, request, *args, **kwargs):

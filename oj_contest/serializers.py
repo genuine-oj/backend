@@ -40,7 +40,8 @@ class ProblemsField(serializers.Field):
 
     def to_representation(self, value):
         request = self.context.get('request')
-        if not request.user.is_staff and value.start_time > timezone.now():
+        if 'contest' not in request.user.permissions and value.start_time > timezone.now(
+        ):
             return []
         queryset = value.problems.all()
         return ProblemSerializer(queryset, many=True,

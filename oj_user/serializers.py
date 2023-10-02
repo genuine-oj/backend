@@ -22,10 +22,10 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id', 'username', 'email', 'real_name', 'student_id', 'is_staff',
-            'avatar'
+            'id', 'username', 'email', 'real_name', 'student_id', 'avatar',
+            'permissions'
         ]
-        read_only_fields = ['id', 'username', 'is_staff', 'problem_solve']
+        read_only_fields = ['id', 'username']
 
 
 class _SubmissionSerializer(serializers.ModelSerializer):
@@ -52,7 +52,8 @@ class UserSubmissionField(serializers.ListField):
         user = self.context['request'].user
         if not value.exists():
             return []
-        elif not user.is_staff and not value.first().user == user:
+        elif 'submission' not in user.permissions and not value.first(
+        ).user == user:
             processing_contest = Contest.objects.filter(
                 start_time__lt=timezone.now(), end_time__gt=timezone.now())
             value = value.exclude(
@@ -85,9 +86,9 @@ class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id', 'username', 'email', 'real_name', 'student_id', 'is_staff',
-            'avatar', 'solved_problems', 'submission_count', 'accepted_count',
-            'submissions'
+            'id', 'username', 'email', 'real_name', 'student_id',
+            'permissions', 'avatar', 'solved_problems', 'submission_count',
+            'accepted_count', 'submissions'
         ]
 
 

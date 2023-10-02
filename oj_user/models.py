@@ -70,6 +70,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=True,
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    permissions = models.JSONField(_('permissions'), default=list)
 
     objects = UserManager()
 

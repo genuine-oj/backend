@@ -60,6 +60,7 @@ class UserPagination(LimitOffsetPagination):
 
 class UserViewSet(ReadOnlyModelViewSet, DestroyAPIView):
     permission_classes = [Granted | IsAuthenticatedAndReadOnly]
+    permission = 'user'
     lookup_value_regex = r'\d+'
     pagination_class = UserPagination
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
@@ -79,10 +80,11 @@ class UserViewSet(ReadOnlyModelViewSet, DestroyAPIView):
         user = self.get_object()
         if request.data.get('password'):
             user.set_password(request.data['password'])
-        if request.data.get('is_staff') == True:
-            user.is_staff = user.is_superuser = True
-        else:
-            user.is_staff = user.is_superuser = False
+        # if request.data.get('permissions') and 'site_setting' in request.data[
+        #         'permissions']:
+        #     user.is_staff = user.is_superuser = True
+        # else:
+        #     user.is_staff = user.is_superuser = False
         user.save()
         serializer = UserSerializer(user, data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -143,9 +145,10 @@ class RegisterView(GenericAPIView):
     permission_classes = [Captcha]
     serializer_class = LoginSerializer
     scene = 'register'
+    permission = 'user'
 
     def post(self, request, *args, **kwargs):
-        if not request.user.is_staff:
+        if self.permission in self.request.user.permissions:
             site_settings = cache.get('site_settings')
             if not site_settings.get('allowRegister'):
                 raise PermissionDenied(_('Register is not allowed.'))
@@ -167,12 +170,21 @@ class InfoAPIView(GenericAPIView):
     serializer_class = UserSerializer
 
     def get(self, request, *args, **kwargs):
+        if request.user.is_superuser and len(request.user.permissions) != 6:
+            request.user.is_staff = True
+            request.user.permissions = [
+                'site_setting', 'problem', 'submission', 'contest',
+                'discussion', 'user'
+            ]
+            request.user.save()
         serializer = self.get_serializer(instance=request.user)
         return Response(serializer.data)
 
     def put(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return Response(status=HTTP_401_UNAUTHORIZED)
+        if request.data.get('permissions'):
+            request.data.pop('permissions')
         serializer = self.get_serializer(instance=request.user,
                                          data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -182,6 +194,7 @@ class InfoAPIView(GenericAPIView):
 
 class SiteSettingsView(GenericAPIView):
     permission_classes = [ReadOnly | IsAdminUser]
+    permission = 'site_setting'
 
     def get(self, request, *args, **kwargs):
 
@@ -198,7 +211,7 @@ class SiteSettingsView(GenericAPIView):
         user = request.user
         data = cache.get('site_settings')
         if data is not None:
-            if not user.is_staff:
+            if user.is_authenticated and self.permission not in user.permissions:
                 data = wash(data)
             return Response(data)
         data_example = json.loads(
@@ -219,7 +232,7 @@ class SiteSettingsView(GenericAPIView):
                     data, indent=4, ensure_ascii=False),
                                                   encoding='utf-8')
         cache.set('site_settings', data, 86400)
-        if not user.is_staff:
+        if user.is_authenticated and self.permission not in user.permissions:
             data = wash(data)
         return Response(data)
 

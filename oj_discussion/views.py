@@ -28,6 +28,7 @@ class ReplyPagination(PageNumberPagination):
 
 class DiscussionViewSet(ReadOnlyModelViewSet):
     permission_classes = [Granted | IsAuthenticatedAndReadCreate, Captcha]
+    permission = scene = 'discussion'
     pagination_class = DiscussionPagination
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
     search_fields = ['id', 'title']
@@ -36,14 +37,13 @@ class DiscussionViewSet(ReadOnlyModelViewSet):
         'author__username'
     ]
     ordering_fields = ['create_time', 'update_time']
-    scene = 'discussion'
 
     def get_queryset(self):
         site_settings = cache.get('site_settings')
-        if self.request.user.is_staff:
+        if not site_settings.get('enableDiscussion'):
+            queryset = Discussion.objects.none()
+        elif self.permission in self.request.user.permissions:
             queryset = Discussion.objects
-        elif not site_settings.get('enableDiscussion'):
-            queryset = Discussion.objects.filter(author__is_staff=True)
         else:
             processing_contest = Contest.objects.filter(
                 start_time__lt=timezone.now(), end_time__gt=timezone.now())
@@ -62,7 +62,6 @@ class DiscussionViewSet(ReadOnlyModelViewSet):
         return queryset.order_by('-id')
 
     def get_serializer_class(self):
-        # if self.action == 'list':
         return DiscussionSerializer
 
     def create(self, request, *args, **kwargs):

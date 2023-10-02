@@ -25,6 +25,7 @@ class ContestPagination(LimitOffsetPagination):
 
 class ContestViewSet(ModelViewSet):
     permission_classes = [Granted | IsAuthenticatedAndReadOnly]
+    permission = 'contest'
     lookup_value_regex = r'\d+'
     pagination_class = ContestPagination
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
@@ -33,7 +34,7 @@ class ContestViewSet(ModelViewSet):
     filterset_fields = []
 
     def get_queryset(self):
-        if self.request.user.is_staff:
+        if self.permission in self.request.user.permissions:
             queryset = Contest.objects.all()
         else:
             queryset = Contest.objects.filter(
@@ -52,7 +53,7 @@ class ContestViewSet(ModelViewSet):
             return Response({'detail': _('No ranking for problem list mode.')})
         if contest.start_time > timezone.now():
             return Response({'detail': _('Contest has not started.')})
-        if not (self.request.user.is_staff
+        if not (self.permission in self.request.user.permissions
                 and request.GET.get('force_update') == 'true'):
             data = cache.get(f'contest_ranking_{pk}')
             if data is not None:

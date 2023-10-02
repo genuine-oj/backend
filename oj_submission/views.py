@@ -50,11 +50,11 @@ class SubmissionViewSet(ReadOnlyModelViewSet, CreateModelMixin):
     ordering_fields = [
         'create_time', 'execute_time', 'execute_memory', 'score'
     ]
-    scene = 'submission'
+    permission = scene = 'submission'
 
     def get_queryset(self):
         site_settings = cache.get('site_settings')
-        if self.request.user.is_staff:
+        if self.permission in self.request.user.permissions:
             queryset = Submission.objects
         elif site_settings.get('forceHideSubmissions'):
             queryset = Submission.objects.filter(user=self.request.user)

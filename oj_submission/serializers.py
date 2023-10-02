@@ -33,7 +33,7 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
         problem_id = validated_data.pop('problem_id')
         problem = Problem.objects.get(id=problem_id)
         if not any([
-                user.is_staff
+                'problem' in user.permissions
                 and bool(len(problem.test_case.test_case_config)),
                 get_problem_queryset(self.context['request']).filter(
                     id=problem_id).exists() and problem.allow_submit
@@ -41,9 +41,6 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 _('Problem submit is not allowed'))
         validated_data['problem'] = problem
-        site_settings = cache.get('site_settings')
-        if site_settings and site_settings.get('forceHideSubmissions'):
-            validated_data['_is_hidden'] = True
         submission = Submission.objects.create(**validated_data)
         judge.delay(
             submission.id, submission.problem.test_case.test_case_id,
