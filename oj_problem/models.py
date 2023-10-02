@@ -13,7 +13,7 @@ def get_default_sample():
 class Problem(models.Model):
     title = models.CharField(_('title'), max_length=50)
     background = models.TextField(_('background'), blank=True, default='')
-    description = models.TextField(_('description'))
+    description = models.TextField(_('description'), blank=True, default='')
     input_format = models.TextField(_('input format'), blank=True, default='')
     output_format = models.TextField(_('output format'),
                                      blank=True,
