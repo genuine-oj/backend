@@ -42,7 +42,7 @@ class TestCaseDetailSerializer(serializers.ModelSerializer):
 
 class TestCaseUpdateSerializer(serializers.ModelSerializer):
     test_cases = serializers.FileField(allow_empty_file=True, required=False)
-    spj_source = serializers.CharField(allow_null=True)
+    spj_source = serializers.CharField(allow_blank=True)
     delete_cases = serializers.JSONField()
 
     class Meta:

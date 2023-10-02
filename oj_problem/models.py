@@ -125,9 +125,7 @@ class TestCase(models.Model):
                                 choices=SpjModeChoices.choices,
                                 blank=True,
                                 default=SpjModeChoices.NULL)
-    spj_source = models.TextField(_('spj_source'),
-                                        blank=True,
-                                        default='')
+    spj_source = models.TextField(_('spj_source'), blank=True, default='')
     subcheck_config = models.JSONField(_('subcheck config'),
                                        blank=True,
                                        default=list)
