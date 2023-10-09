@@ -148,7 +148,7 @@ class RegisterView(GenericAPIView):
     permission = 'user'
 
     def post(self, request, *args, **kwargs):
-        if self.permission in self.request.user.permissions:
+        if self.request.user.is_anonymous or self.permission not in self.request.user.permissions:
             site_settings = cache.get('site_settings')
             if not site_settings.get('allowRegister'):
                 raise PermissionDenied(_('Register is not allowed.'))
